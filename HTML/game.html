@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Catch My Heart | Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --primary: #ff4d6d; --secondary: #ffccd5; --bg: #fffcf9; --text: #594157; }
+        body { font-family: 'Quicksand', sans-serif; background: var(--bg); color: var(--text); margin: 0; text-align: center; }
+        
+        nav { background: white; padding: 20px; display: flex; justify-content: center; gap: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        nav a { text-decoration: none; color: var(--text); font-weight: 500; }
+        .active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+
+        section { padding: 50px 20px; max-width: 800px; margin: auto; }
+        h2 { font-family: 'Dancing Script', cursive; font-size: 3rem; color: var(--primary); margin-bottom: 10px; }
+
+        /* Status message styling under the Title */
+        #status-message {
+            font-weight: bold;
+            color: var(--primary);
+            min-height: 30px; 
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            display: block;
+        }
+
+        #game-boundary {
+            height: 400px;
+            background: white;
+            border: 3px dashed var(--secondary);
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #heart {
+            font-size: 50px;
+            position: absolute;
+            cursor: pointer;
+            transition: 0.1s ease-out;
+            user-select: none;
+            left: 45%;
+            top: 40%;
+        }
+
+        #prize-reveal {
+            display: none;
+            padding: 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="../index.html">Our Story</a>
+        <a href="gallery.html">Albums</a>
+        <a href="game.html" class="active">The Surprise</a>
+    </nav>
+
+    <section>
+        <div id="game-content">
+            <h2 style="font-size: 60px;">Catch My Heart</h2>
+            <span id="status-message" style="margin-top: 30px; font-size: 30px;">Try nga kung fast hand 🙄 </span>
+            
+            <div id="game-boundary">
+                <div id="heart" onmouseover="moveHeart()" onclick="revealPrize()">❤️</div>
+            </div>
+        </div>
+
+        <div id="prize-reveal">
+            <h2 style="font-size: 5rem;">Nice Nice 🎉 pero....</h2>
+            <p style="font-size: 1.5rem;">Nahuli ba talaga? 😏 HAHAHAHAHA</p>
+            <a href="letter.html" style="display: inline-block; background: var(--primary); color: white; padding: 12px 25px; border-radius: 25px; text-decoration: none; font-weight: bold;">It's My Simple Surprise, Love →</a>
+        </div>
+    </section>
+
+    <script>
+        let attempts = 0;
+        const maxAttempts = 20; // Set to 15 as requested
+        const heart = document.getElementById('heart');
+        const status = document.getElementById('status-message');
+
+        function moveHeart() {
+            if (attempts >= maxAttempts) {
+                heart.style.transition = "0.5s";
+                heart.innerHTML = "😏"; 
+                status.innerHTML = "Hiningal na yung puso ko, Slow hands kasi 😏";
+                return; 
+            }
+
+            const box = document.getElementById('game-boundary');
+            const x = Math.random() * (box.clientWidth - 70);
+            const y = Math.random() * (box.clientHeight - 70);
+            
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
+
+            attempts++;
+
+            // Dynamic funny messages
+            if (attempts === 5) status.innerHTML = "Ano bayan ang bagal 🤪";
+            if (attempts === 12) status.innerHTML = "Wala to Mahina HAHAHAHA 🙄";
+            if (attempts === 16) status.innerHTML = "Malapit na mapagod 'to, bilisan mo! 😂";
+        }
+
+        function revealPrize() {
+            document.getElementById('game-content').style.display = 'none';
+            document.getElementById('prize-reveal').style.display = 'block';
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        }
+    </script>
+</body>
+</html>

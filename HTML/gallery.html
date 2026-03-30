@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Our Story | Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
+<style>
+    :root { --primary: #ff4d6d; --secondary: #ffccd5; --bg: #fffcf9; --text: #594157; }
+    body { font-family: 'Quicksand', sans-serif; background: var(--bg); color: var(--text); margin: 0; }
+    
+    /* Navigation Bar */
+    nav { background: white; padding: 20px; display: flex; justify-content: center; gap: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
+    nav a { text-decoration: none; color: var(--text); font-weight: 500; transition: 0.3s; font-size: 1.1rem; }
+    nav a:hover { color: var(--primary); }
+    .active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+
+    section { padding: 60px 20px; max-width: 900px; margin: auto; text-align: center; }
+    h1, h2 { font-family: 'Dancing Script', cursive; color: var(--primary); }
+</style>
+    </head>
+<body>
+    <nav>
+        <a href="index.html" class="active">Our Story</a>
+        <a href="HTML/gallery.html">Albums</a>
+        <a href="HTML/game.html">The Surprise</a>
+    </nav>
+
+    <header style="height: 50vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(rgba(255,252,249,0.8), rgba(255,252,249,0.8)), url('https://images.unsplash.com/photo-1518562180175-34a163b159c1?q=80&w=2070'); background-size: cover; font-size: 35px;">
+        <h1>Happy Monthsary, My Love.</h1>
+    </header>
+
+    <section>
+        <h2>How It All Started</h2>
+        <div style="border-left: 2px dashed var(--primary); text-align: left; padding-left: 30px; margin: 40px auto; max-width: 500px;">
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: var(--primary); margin: 0;">July 2025</h3>
+                <p>The month that changed everything. From our first chat to that "click" I'll never forget.</p>
+            </div>
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: var(--primary); margin: 0;">August - October 2025</h3>
+                <p>Building memories, sharing songs, and realizing you're my person.</p>
+            </div>
+            <div>
+                <h3 style="color: var(--primary); margin: 0;">Today</h3>
+                <p>Still falling for you more every single day.</p>
+            </div>
+        </div>
+        <a href="gallery.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">Next: See our memories →</a>
+    </section>
+</body>
+</html>
