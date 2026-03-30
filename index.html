@@ -3,21 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Memories</title>
+    <title>Our Memories | Gallery</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #ff4d6d; --secondary: #ffccd5; --bg: #fffcf9; --text: #594157; }
+        :root { 
+            --primary: #ff4d6d; 
+            --secondary: #ffccd5; 
+            --bg: #fffcf9; 
+            --text: #594157; 
+            --white: #ffffff;
+            --shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
         
+        * { box-sizing: border-box; }
         body { 
             font-family: 'Quicksand', sans-serif; 
             background: var(--bg); 
             color: var(--text); 
             margin: 0; 
-            overflow-x: hidden; 
             min-height: 100vh;
         }
 
-        /* Floating Hearts Background */
         .background-hearts { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
         .heart { position: absolute; color: var(--secondary); font-size: 20px; animation: float 10s linear infinite; opacity: 0.6; }
         @keyframes float {
@@ -26,577 +32,291 @@
         }
 
         /* Navigation */
-        nav { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); padding: 20px; display: flex; justify-content: center; gap: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
-        nav a { text-decoration: none; color: var(--text); font-weight: 500; transition: 0.3s; font-size: 1.1rem; }
-        nav a:hover { color: var(--primary); }
-        .active { color: var(--primary); border-bottom: 2px solid var(--primary); }
-
-        /* Gallery Wrapper */
-        .gallery-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            gap: 40px;
-            padding: 60px 20px;
-            max-width: 1200px;
-            margin: auto;
-            transition: 0.5s ease;
-        }
-
-        /* Folder Logic */
-        .folder-container {
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 300px;
+        nav { 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px); 
+            padding: 15px; 
             text-align: center;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05); 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
         }
-
-        /* Hide others when one is open */
-        .has-open-folder .folder-container:not(.is-open) { display: none; }
-        .folder-container.is-open { width: 100%; cursor: default; }
-
-        .folder-title {
-            font-family: 'Dancing Script', cursive;
-            color: var(--primary);
-            font-size: 2.5rem;
-            margin-bottom: 20px;
+        .nav-title { font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: var(--primary); margin: 0 0 10px 0; }
+        
+        .tabs { display: flex; justify-content: center; gap: 25px; }
+        .tab-btn { 
+            background: none; border: none; font-family: 'Quicksand', sans-serif; 
+            font-size: 1rem; font-weight: 700; color: var(--text); cursor: pointer; 
+            padding: 5px 10px; transition: 0.3s; text-transform: uppercase;
         }
+        .tab-btn.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
 
-        /* The Stack (Closed State) */
-        .folder-content { position: relative; min-height: 350px; transition: 0.5s; }
-        .folder-container:not(.is-open) .folder-content { cursor: pointer; }
+        /* Main Container */
+        .main-container { max-width: 1300px; margin: auto; padding: 40px 20px; min-height: 80vh; }
+        .tab-content { display: none; animation: fadeIn 0.5s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .card {
-            background: white;
-            padding: 12px 12px 35px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border-radius: 2px;
+        /* Photo Deck Logic */
+        .photo-wrapper { display: flex; flex-wrap: wrap; justify-content: center; gap: 60px; }
+        .folder-container { width: 350px; text-align: center; cursor: pointer; transition: 0.4s; }
+        .folder-title { font-family: 'Dancing Script', cursive; color: var(--primary); font-size: 2.5rem; margin-bottom: 25px; }
+
+        .card-deck { position: relative; width: 280px; height: 350px; margin: auto; }
+        .card { 
+            position: absolute; width: 100%; height: 100%; background: var(--white); 
+            padding: 15px 15px 45px; box-shadow: var(--shadow); 
+            border-radius: 2px; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+        .card img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Initial Stack Look */
-        .folder-container:not(.is-open) .card {
-            position: absolute;
-            width: 200px;
-            left: 50%;
-            margin-left: -100px;
-            pointer-events: none;
-        }
-        .folder-container:not(.is-open) .card:nth-child(1) { transform: rotate(-5deg); z-index: 5; opacity: 1; }
-        .folder-container:not(.is-open) .card:nth-child(2) { transform: rotate(4deg); z-index: 4; opacity: 1; }
-        .folder-container:not(.is-open) .card:nth-child(n+3) { opacity: 0; }
-
-        /* Hover on Stack */
+        /* Stacked State */
+        .folder-container:not(.is-open) .card:nth-child(1) { transform: rotate(-5deg); z-index: 5; }
+        .folder-container:not(.is-open) .card:nth-child(2) { transform: rotate(5deg); z-index: 4; }
+        .folder-container:not(.is-open) .card:nth-child(n+3) { display: none; }
         .folder-container:not(.is-open):hover .card:nth-child(1) { transform: rotate(0deg) translateY(-20px); }
 
-        /* Spread Look (Open State) */
-        .folder-container.is-open .folder-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            height: auto;
+        /* Open State (3 Cards per row desktop) */
+        .has-open-folder .folder-container:not(.is-open) { display: none; }
+        .folder-container.is-open { width: 100%; cursor: default; }
+        .folder-container.is-open .card-deck { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 40px; width: 100%; height: auto; position: static; 
         }
-        .folder-container.is-open .card {
-            position: relative;
-            width: auto;
-            left: 0;
-            margin-left: 0;
-            opacity: 1;
-            pointer-events: auto;
-            cursor: zoom-in;
+        .folder-container.is-open .card { 
+            position: relative; transform: none !important; opacity: 1; cursor: zoom-in; 
+            height: 450px; /* Bigger height when opened */
         }
 
-#back-btn {
-    display: none; /* Default hidden */
-    position: fixed !important;
-    top: 35px !important;
-    right: 25px !important;
-    z-index: 99999 !important;
-    
-    /* Glassmorphism Effect */
-    background: rgba(255, 77, 109, 0.85) !important;
-    backdrop-filter: blur(8px) !important;
-    -webkit-backdrop-filter: blur(8px) !important;
-    
-    color: white !important;
-    padding: 12px 28px !important;
-    border-radius: 75px !important;
-    border: 2px solid rgba(255, 255, 255, 0.5) !important;
-    cursor: pointer !important;
-    
-    font-family: 'Quicksand', sans-serif !important;
-    font-weight: 700 !important;
-    font-size: 0.9rem !important;
-    text-transform: uppercase;
-    
-    box-shadow: 0 8px 32px rgba(255, 77, 109, 0.3) !important;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-    
-    /* Soft Pulse Animation */
-    animation: buttonPulse 2s infinite;
-}
+        /* Video Grid */
+        .video-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
+            gap: 30px; 
+        }
+        .video-card { background: white; padding: 15px; border-radius: 12px; box-shadow: var(--shadow); transition: 0.3s; }
+        .video-card:hover { transform: translateY(-5px); }
+        .video-card video { width: 100%; height: 500px; object-fit: cover; border-radius: 8px; cursor: pointer; }
 
-/* Hover effects */
-#back-btn:hover {
-    transform: scale(1.05) translateY(-2px) !important;
-    background: rgba(255, 77, 109, 1) !important;
-    box-shadow: 0 12px 40px rgba(255, 77, 109, 0.5) !important;
-}
+        /* Controls */
+        #back-btn { 
+            display: none; position: fixed; top: 120px; left: 50%; transform: translateX(-50%); z-index: 9999;
+            background: var(--primary); color: white; border: none; padding: 12px 35px; 
+            border-radius: 50px; cursor: pointer; font-weight: 700; box-shadow: 0 4px 20px rgba(255, 77, 109, 0.4);
+        }
+        .has-open-folder #back-btn { display: block; }
 
-#back-btn:active {
-    transform: scale(0.95) !important;
-}
-
-/* Pulse Animation Logic */
-@keyframes buttonPulse {
-    0% { box-shadow: 0 0 0 0 rgba(255, 77, 109, 0.4); }
-    70% { box-shadow: 0 0 0 15px rgba(255, 77, 109, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(255, 77, 109, 0); }
-}
-
-/* Trigger Visibility */
-.has-open-folder #back-btn {
-    display: flex !important;
-    align-items: center;
-    gap: 8px;
-}
-
-/* Palitan ang dating ".has-open-folder #back-btn" nito: */
-.has-open-folder ~ #back-btn, 
-#main-wrapper.has-open-folder ~ #back-btn,
-body:has(.is-open) #back-btn {
-    display: block !important;
-}
-        /* Music & Lightbox */
         #music-control { position: fixed; bottom: 30px; right: 30px; z-index: 2000; background: var(--primary); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        #lightbox { display: none; position: fixed; z-index: 3000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        #lightbox img { max-width: 90%; max-height: 80%; border: 8px solid white; transform: scale(0.8); transition: 0.3s; }
-        #lightbox.active { display: flex; }
-        #lightbox.active img { transform: scale(1); }
+        
+        /* FIXED LIGHTBOX - Background and Centering */
+#lightbox { 
+    display: none; 
+    position: fixed; 
+    z-index: 10000; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0,0,0,0.92); 
+    justify-content: center; 
+    align-items: center; 
+    backdrop-filter: blur(8px); 
+    padding: 20px;
+}
+
+/* The Polaroid Frame - Fixed Size for Consistency */
+#lightbox-content {
+    background: white;
+    padding: 15px 15px 60px; /* Thicker bottom for the Polaroid look */
+    width: 400px;  /* Fixed width to keep all photos the same size */
+    height: 500px; /* Fixed height for uniformity */
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    animation: zoomIn 0.3s ease-out;
+}
+
+#lightbox img, #lightbox video { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; /* Ensures any image fills the frame properly */
+    display: block;
+}
+
+/* Optional: Animation for a professional feel */
+@keyframes zoomIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Responsive adjustment for Mobile so it doesn't overflow */
+@media (max-width: 450px) {
+    #lightbox-content {
+        width: 90vw;
+        height: 110vw;
+        padding: 10px 10px 40px;
+    }
+}
+
+
+        @media (max-width: 1024px) {
+            .folder-container.is-open .card-deck { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .folder-container.is-open .card-deck { grid-template-columns: 1fr; }
+            .folder-container { width: 100%; }
+            .video-grid { grid-template-columns: 1fr; }
+            #back-btn { top: 130px; width: 85%; }
+        }
     </style>
 </head>
 <body>
 
     <div class="background-hearts" id="heart-container"></div>
-    <button id="back-btn" onclick="closeAllFolders()">←</button>
-
-    <audio id="bg-music" loop><source src="/MUSIC/[선재 업고 튀어 (Lovely Runner) OST Part 8] 10CM - 봄눈 (Spring Snow) MV.mp3" type="audio/mpeg"></audio>
-    <div id="music-control" onclick="toggleMusic()"><span id="music-icon">🎵</span></div>
-
-    <div id="lightbox" onclick="this.classList.remove('active')">
-        <img id="lightbox-img" src="">
-    </div>
-
+    
     <nav>
-        <!-- <a href="../index.html">Our Story</a> -->
-        <a href="gallery.html" class="active">Albums</a>
-        <!-- <a href="game.html">The Surprise</a> -->
+        <h1 class="nav-title">Albums</h1>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(event, 'photos')">Photos</button>
+            <button class="tab-btn" onclick="switchTab(event, 'videos')">Videos</button>
+        </div>
     </nav>
 
+    <button id="back-btn" onclick="closeFolder()">← BACK TO ALBUMS</button>
 
-    <div class="gallery-wrapper" id="main-wrapper">
-        
-        <div class="folder-container" id="folder-us" onclick="openFolder('us')">
-            <h2 class="folder-title">US</h2>
-            <div class="folder-content">
-                <div class="card" onclick="openLightbox(event, '/US/1.jpg')"><img src="/US/1.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/2.jpg')"><img src="/US/2.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/3.jpg')"><img src="/US/3.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/4.jpg')"><img src="/US/4.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/5.jpg')"><img src="/US/5.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/6.jpg')"><img src="/US/6.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/7.jpg')"><img src="/US/7.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/8.jpg')"><img src="/US/8.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/9.jpg')"><img src="/US/9.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/10.jpg')"><img src="/US/10.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/11.jpg')"><img src="/US/11.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/12.jpg')"><img src="/US/12.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/13.jpg')"><img src="/US/13.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/14.jpg')"><img src="/US/14.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/15.jpg')"><img src="/US/15.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/16.jpg')"><img src="/US/16.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/17.jpg')"><img src="/US/17.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/18.jpg')"><img src="/US/18.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/19.jpg')"><img src="/US/19.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/20.jpg')"><img src="/US/20.jpg"></div>
-
-                <div class="card" onclick="openLightbox(event, '/US/21.jpg')"><img src="/US/21.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/22.jpg')"><img src="/US/22.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/23.jpg')"><img src="/US/23.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/24.jpg')"><img src="/US/24.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/25.jpg')"><img src="/US/25.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/26.jpg')"><img src="/US/26.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/27.jpg')"><img src="/US/27.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/28.jpg')"><img src="/US/28.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/29.jpg')"><img src="/US/29.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/30.jpg')"><img src="/US/30.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/31.jpg')"><img src="/US/31.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/32.jpg')"><img src="/US/32.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/33.jpg')"><img src="/US/33.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/34.jpg')"><img src="/US/34.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/35.jpg')"><img src="/US/35.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/36.jpg')"><img src="/US/36.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/37.jpg')"><img src="/US/37.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/38.jpg')"><img src="/US/38.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/39.jpg')"><img src="/US/39.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/40.jpg')"><img src="/US/40.jpg"></div>
-
-                <div class="card" onclick="openLightbox(event, '/US/41.jpg')"><img src="/US/41.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/42.jpg')"><img src="/US/42.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/43.jpg')"><img src="/US/43.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/44.jpg')"><img src="/US/44.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/45.jpg')"><img src="/US/45.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/46.jpg')"><img src="/US/46.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/47.jpg')"><img src="/US/47.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/48.jpg')"><img src="/US/48.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/49.jpg')"><img src="/US/49.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/50.jpg')"><img src="/US/50.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/51.jpg')"><img src="/US/51.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/52.jpg')"><img src="/US/52.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/53.jpg')"><img src="/US/53.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/54.jpg')"><img src="/US/54.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/55.jpg')"><img src="/US/55.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/56.jpg')"><img src="/US/56.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/57.jpg')"><img src="/US/57.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/58.jpg')"><img src="/US/58.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/59.jpg')"><img src="/US/59.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/60.jpg')"><img src="/US/60.jpg"></div>
-
-                <div class="card" onclick="openLightbox(event, '/US/61.jpg')"><img src="/US/61.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/62.jpg')"><img src="/US/62.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/63.jpg')"><img src="/US/63.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/64.jpg')"><img src="/US/64.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/65.jpg')"><img src="/US/65.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/66.jpg')"><img src="/US/66.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/67.jpg')"><img src="/US/67.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/68.jpg')"><img src="/US/68.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/69.jpg')"><img src="/US/69.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/70.jpg')"><img src="/US/70.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/71.jpg')"><img src="/US/71.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/72.jpg')"><img src="/US/72.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/73.jpg')"><img src="/US/73.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/74.jpg')"><img src="/US/74.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/75.jpg')"><img src="/US/75.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/76.jpg')"><img src="/US/76.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/77.jpg')"><img src="/US/77.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/78.jpg')"><img src="/US/78.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/79.jpg')"><img src="/US/79.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/80.jpg')"><img src="/US/80.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/81.jpg')"><img src="/US/81.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/82.jpg')"><img src="/US/82.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/83.jpg')"><img src="/US/83.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/84.jpg')"><img src="/US/84.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/85.jpg')"><img src="/US/85.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/86.jpg')"><img src="/US/86.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/87.jpg')"><img src="/US/87.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/88.jpg')"><img src="/US/88.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/89.jpg')"><img src="/US/89.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/90.jpg')"><img src="/US/90.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/91.jpg')"><img src="/US/91.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/92.jpg')"><img src="/US/92.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/93.jpg')"><img src="/US/93.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/94.jpg')"><img src="/US/94.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/95.jpg')"><img src="/US/95.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/96.jpg')"><img src="/US/96.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/97.jpg')"><img src="/US/97.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/98.jpg')"><img src="/US/98.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/99.jpg')"><img src="/US/99.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/100.jpg')"><img src="/US/100.jpg"></div>
-
-                <div class="card" onclick="openLightbox(event, '/US/101.jpg')"><img src="/US/101.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/102.jpg')"><img src="/US/102.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/103.jpg')"><img src="/US/103.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/104.jpg')"><img src="/US/104.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/105.jpg')"><img src="/US/105.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/106.jpg')"><img src="/US/106.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/107.jpg')"><img src="/US/107.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/108.jpg')"><img src="/US/108.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/109.jpg')"><img src="/US/109.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/110.jpg')"><img src="/US/110.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/111.jpg')"><img src="/US/111.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/112.jpg')"><img src="/US/112.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/113.jpg')"><img src="/US/113.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/114.jpg')"><img src="/US/114.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/115.jpg')"><img src="/US/115.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/116.jpg')"><img src="/US/116.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/117.jpg')"><img src="/US/117.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/118.jpg')"><img src="/US/118.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/119.jpg')"><img src="/US/119.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/120.jpg')"><img src="/US/120.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/121.jpg')"><img src="/US/121.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/122.jpg')"><img src="/US/122.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/123.jpg')"><img src="/US/123.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/124.jpg')"><img src="/US/124.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/125.jpg')"><img src="/US/125.jpg"></div>
-
-                <div class="card" onclick="openLightbox(event, '/US/126.jpg')"><img src="/US/126.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/127.jpg')"><img src="/US/127.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/128.jpg')"><img src="/US/128.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/129.jpg')"><img src="/US/129.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/130.jpg')"><img src="/US/130.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/131.jpg')"><img src="/US/131.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/132.jpg')"><img src="/US/132.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/133.jpg')"><img src="/US/133.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/134.jpg')"><img src="/US/134.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/135.jpg')"><img src="/US/135.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/136.jpg')"><img src="/US/136.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/137.jpg')"><img src="/US/137.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/138.jpg')"><img src="/US/138.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/139.jpg')"><img src="/US/139.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/140.jpg')"><img src="/US/140.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/141.jpg')"><img src="/US/141.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/142.jpg')"><img src="/US/142.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/143.jpg')"><img src="/US/143.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/144.jpg')"><img src="/US/144.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/145.jpg')"><img src="/US/145.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/146.jpg')"><img src="/US/146.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/147.jpg')"><img src="/US/147.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/148.jpg')"><img src="/US/148.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/149.jpg')"><img src="/US/149.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/150.jpg')"><img src="/US/150.jpg"></div>
-
-                <div class="card" onclick="openLightbox(event, '/US/151.jpg')"><img src="/US/151.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/152.jpg')"><img src="/US/152.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/153.jpg')"><img src="/US/153.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/154.jpg')"><img src="/US/154.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/155.jpg')"><img src="/US/155.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/156.jpg')"><img src="/US/156.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/157.jpg')"><img src="/US/157.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/158.jpg')"><img src="/US/158.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/159.jpg')"><img src="/US/159.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/160.jpg')"><img src="/US/160.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/161.jpg')"><img src="/US/161.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/162.jpg')"><img src="/US/162.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/163.jpg')"><img src="/US/163.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/164.jpg')"><img src="/US/164.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/165.jpg')"><img src="/US/165.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/166.jpg')"><img src="/US/166.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/167.jpg')"><img src="/US/167.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/168.jpg')"><img src="/US/168.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/169.jpg')"><img src="/US/169.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/170.jpg')"><img src="/US/170.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/171.jpg')"><img src="/US/171.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/172.jpg')"><img src="/US/172.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/173.jpg')"><img src="/US/173.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/US/174.jpg')"><img src="/US/174.jpg"></div>
+    <div class="main-container" id="main-wrapper">
+        <div id="photos-tab" class="tab-content active">
+            <div class="photo-wrapper">
+                <div class="folder-container" id="folder-us" onclick="openFolder('us')">
+                    <h2 class="folder-title">US</h2>
+                    <div class="card-deck" id="deck-us">
+                        <div class="card"><img src="/US/1.jpg"></div>
+                        <div class="card"><img src="/US/2.jpg"></div>
+                    </div>
                 </div>
+                <div class="folder-container" id="folder-foods" onclick="openFolder('foods')">
+                    <h2 class="folder-title">FOODS</h2>
+                    <div class="card-deck" id="deck-foods">
+                        <div class="card"><img src="/FOODS/1.jpg"></div>
+                        <div class="card"><img src="/FOODS/2.jpg"></div>
+                    </div>
+                </div>
+                <div class="folder-container" id="folder-yours" onclick="openFolder('yours')">
+                    <h2 class="folder-title">YOURS</h2>
+                    <div class="card-deck" id="deck-yours">
+                        <div class="card"><img src="/YOURS/1.jpg"></div>
+                        <div class="card"><img src="/YOURS/2.jpg"></div>
+                    </div>
+                </div>
+                <div class="folder-container" id="folder-wfriends" onclick="openFolder('wfriends')">
+                    <h2 class="folder-title">WFRIENDS</h2>
+                    <div class="card-deck" id="deck-wfriends">
+                        <div class="card"><img src="/WFRIENDS/1.jpg"></div>
+                        <div class="card"><img src="/WFRIENDS/2.jpg"></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="folder-container" id="folder-foods" onclick="openFolder('foods')">
-            <h2 class="folder-title">FOODS</h2>
-            <div class="folder-content">
-                <div class="card" onclick="openLightbox(event, '/FOODS/1.jpg')"><img src="/FOODS/1.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/FOODS/2.jpg')"><img src="/FOODS/2.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/FOODS/3.jpg')"><img src="/FOODS/3.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/FOODS/4.jpg')"><img src="/FOODS/4.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/FOODS/5.jpg')"><img src="/FOODS/5.jpg"></div>
+        <div id="videos-tab" class="tab-content">
+            <div class="video-grid">
+                <div class="video-card" onclick="openLightbox('VIDEOS/1.mp4')">
+                    <video src="VIDEOS/1.mp4" muted loop autoplay playsinline></video>
                 </div>
-        </div>
-
-        <div class="folder-container" id="folder-yours" onclick="openFolder('yours')">
-            <h2 class="folder-title">YOU</h2>
-            <div class="folder-content">
-                <div class="card" onclick="openLightbox(event, '/YOURS/1.jpg')"><img src="/YOURS/1.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/2.jpg')"><img src="/YOURS/2.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/3.jpg')"><img src="/YOURS/3.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/4.jpg')"><img src="/YOURS/4.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/5.jpg')"><img src="/YOURS/5.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/6.jpg')"><img src="/YOURS/6.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/7.jpg')"><img src="/YOURS/7.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/8.jpg')"><img src="/YOURS/8.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/9.jpg')"><img src="/YOURS/9.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/10.jpg')"><img src="/YOURS/10.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/11.jpg')"><img src="/YOURS/11.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/12.jpg')"><img src="/YOURS/12.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/13.jpg')"><img src="/YOURS/13.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/14.jpg')"><img src="/YOURS/14.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/15.jpg')"><img src="/YOURS/15.jpg"></div>
-
-                <div class="card" onclick="openLightbox(event, '/YOURS/16.jpg')"><img src="/YOURS/16.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/17.jpg')"><img src="/YOURS/17.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/18.jpg')"><img src="/YOURS/18.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/19.jpg')"><img src="/YOURS/19.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/20.jpg')"><img src="/YOURS/20.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/21.jpg')"><img src="/YOURS/21.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/22.jpg')"><img src="/YOURS/22.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/23.jpg')"><img src="/YOURS/23.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/24.jpg')"><img src="/YOURS/24.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/25.jpg')"><img src="/YOURS/25.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/26.jpg')"><img src="/YOURS/26.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/27.jpg')"><img src="/YOURS/27.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/28.jpg')"><img src="/YOURS/28.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/29.jpg')"><img src="/YOURS/29.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/30.jpg')"><img src="/YOURS/30.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/31.jpg')"><img src="/YOURS/31.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/32.jpg')"><img src="/YOURS/32.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/33.jpg')"><img src="/YOURS/33.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/34.jpg')"><img src="/YOURS/34.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/35.jpg')"><img src="/YOURS/35.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/36.jpg')"><img src="/YOURS/36.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/37.jpg')"><img src="/YOURS/37.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/38.jpg')"><img src="/YOURS/38.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/39.jpg')"><img src="/YOURS/39.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/40.jpg')"><img src="/YOURS/40.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/41.jpg')"><img src="/YOURS/41.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/42.jpg')"><img src="/YOURS/42.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/43.jpg')"><img src="/YOURS/43.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/44.jpg')"><img src="/YOURS/44.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/45.jpg')"><img src="/YOURS/45.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/46.jpg')"><img src="/YOURS/46.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/47.jpg')"><img src="/YOURS/47.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/48.jpg')"><img src="/YOURS/48.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/49.jpg')"><img src="/YOURS/49.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/50.jpg')"><img src="/YOURS/50.jpg"></div>
-
-                <div class="card" onclick="openLightbox(event, '/YOURS/51.jpg')"><img src="/YOURS/51.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/52.jpg')"><img src="/YOURS/52.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/53.jpg')"><img src="/YOURS/53.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/54.jpg')"><img src="/YOURS/54.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/55.jpg')"><img src="/YOURS/55.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/56.jpg')"><img src="/YOURS/56.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/57.jpg')"><img src="/YOURS/57.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/58.jpg')"><img src="/YOURS/58.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/59.jpg')"><img src="/YOURS/59.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/60.jpg')"><img src="/YOURS/60.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/61.jpg')"><img src="/YOURS/61.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/62.jpg')"><img src="/YOURS/62.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/63.jpg')"><img src="/YOURS/63.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/64.jpg')"><img src="/YOURS/64.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/65.jpg')"><img src="/YOURS/65.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/66.jpg')"><img src="/YOURS/66.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/67.jpg')"><img src="/YOURS/67.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/68.jpg')"><img src="/YOURS/68.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/69.jpg')"><img src="/YOURS/69.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/70.jpg')"><img src="/YOURS/70.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/71.jpg')"><img src="/YOURS/71.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/72.jpg')"><img src="/YOURS/72.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/73.jpg')"><img src="/YOURS/73.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/74.jpg')"><img src="/YOURS/74.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/75.jpg')"><img src="/YOURS/75.jpg"></div>
-
-                <div class="card" onclick="openLightbox(event, '/YOURS/76.jpg')"><img src="/YOURS/76.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/77.jpg')"><img src="/YOURS/77.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/78.jpg')"><img src="/YOURS/78.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/79.jpg')"><img src="/YOURS/79.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/80.jpg')"><img src="/YOURS/80.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/81.jpg')"><img src="/YOURS/81.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/82.jpg')"><img src="/YOURS/82.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/83.jpg')"><img src="/YOURS/83.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/84.jpg')"><img src="/YOURS/84.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/85.jpg')"><img src="/YOURS/85.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/86.jpg')"><img src="/YOURS/86.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/87.jpg')"><img src="/YOURS/87.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/88.jpg')"><img src="/YOURS/88.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/89.jpg')"><img src="/YOURS/89.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/90.jpg')"><img src="/YOURS/90.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/91.jpg')"><img src="/YOURS/91.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/92.jpg')"><img src="/YOURS/92.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/93.jpg')"><img src="/YOURS/93.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/94.jpg')"><img src="/YOURS/94.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/95.jpg')"><img src="/YOURS/95.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/96.jpg')"><img src="/YOURS/96.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/97.jpg')"><img src="/YOURS/97.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/98.jpg')"><img src="/YOURS/98.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/99.jpg')"><img src="/YOURS/99.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/100.jpg')"><img src="/YOURS/100.jpg"></div>
-
-                <div class="card" onclick="openLightbox(event, '/YOURS/101.jpg')"><img src="/YOURS/101.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/102.jpg')"><img src="/YOURS/102.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/103.jpg')"><img src="/YOURS/103.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/104.jpg')"><img src="/YOURS/104.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/105.jpg')"><img src="/YOURS/105.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/106.jpg')"><img src="/YOURS/106.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/107.jpg')"><img src="/YOURS/107.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/108.jpg')"><img src="/YOURS/108.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/109.jpg')"><img src="/YOURS/109.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/YOURS/110.jpg')"><img src="/YOURS/110.jpg"></div>
+                <div class="video-card" onclick="openLightbox('VIDEOS/2.mp4')">
+                    <video src="VIDEOS/2.mp4" muted loop autoplay playsinline></video>
                 </div>
-        </div>
-
-        <div class="folder-container" id="folder-wfriends" onclick="openFolder('wfriends')">
-            <h2 class="folder-title">WITH FRIENDS</h2>
-            <div class="folder-content">
-                <div class="card" onclick="openLightbox(event, '/WFRIENDS/1.jpg')"><img src="/WFRIENDS/1.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/WFRIENDS/2.jpg')"><img src="/WFRIENDS/2.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/WFRIENDS/3.jpg')"><img src="/WFRIENDS/3.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/WFRIENDS/4.jpg')"><img src="/WFRIENDS/4.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/WFRIENDS/5.jpg')"><img src="/WFRIENDS/5.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/WFRIENDS/6.jpg')"><img src="/WFRIENDS/6.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/WFRIENDS/7.jpg')"><img src="/WFRIENDS/7.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/WFRIENDS/8.jpg')"><img src="/WFRIENDS/8.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/WFRIENDS/9.jpg')"><img src="/WFRIENDS/9.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/WFRIENDS/10.jpg')"><img src="/WFRIENDS/10.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/WFRIENDS/11.jpg')"><img src="/WFRIENDS/11.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/WFRIENDS/12.jpg')"><img src="/WFRIENDS/12.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/WFRIENDS/13.jpg')"><img src="/WFRIENDS/13.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/WFRIENDS/14.jpg')"><img src="/WFRIENDS/14.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/WFRIENDS/15.jpg')"><img src="/WFRIENDS/15.jpg"></div>
-                <div class="card" onclick="openLightbox(event, '/WFRIENDS/16.jpg')"><img src="/WFRIENDS/16.jpg"></div>
+                <div class="video-card" onclick="openLightbox('VIDEOS/3.mp4')">
+                    <video src="VIDEOS/3.mp4" muted loop autoplay playsinline></video>
                 </div>
+            </div>
         </div>
+    </div>
 
+    <audio id="bg-music" loop><source src="/MUSIC/[선재 업고 튀어 (Lovely Runner) OST Part 8] 10CM - 봄눈 (Spring Snow) MV.mp3" type="audio/mpeg"></audio>
+    <div id="music-control" onclick="toggleMusic()">🎵</div>
+
+    <div id="lightbox" onclick="this.style.display='none'">
+        <div id="lightbox-content" onclick="event.stopPropagation()"></div>
     </div>
 
     <script>
-        function openFolder(id) {
-    const wrapper = document.getElementById('main-wrapper');
-    const target = document.getElementById('folder-' + id);
-    
-    // Tanggalin muna ang 'is-open' sa lahat para malinis
-    document.querySelectorAll('.folder-container').forEach(f => f.classList.remove('is-open'));
-    
-    // Buksan ang target album
-    target.classList.add('is-open');
-    
-    // Eto ang magpapa-trigger sa CSS para lumabas ang Back Button
-    wrapper.classList.add('has-open-folder'); 
-    
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+        const counts = { us: 174, foods: 5, wfriends: 16, yours: 110 };
 
-function closeAllFolders() {
-    const wrapper = document.getElementById('main-wrapper');
-    
-    // Tanggalin ang 'is-open' sa lahat ng folders
-    document.querySelectorAll('.folder-container').forEach(f => f.classList.remove('is-open'));
-    
-    // Tanggalin ang 'has-open-folder' para magtago ang Back Button at lumabas ulit yung 3 albums
-    wrapper.classList.remove('has-open-folder');
-    
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-        function openLightbox(e, src) {
-            e.stopPropagation(); // Prevents folder closing/opening
-            const lb = document.getElementById('lightbox');
-            document.getElementById('lightbox-img').src = src;
-            lb.classList.add('active');
+        function switchTab(event, tabName) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
+            closeFolder();
         }
 
-        function toggleMusic() {
-    const music = document.getElementById('bg-music');
-    // Kahit i-click, laging "play" lang ang gagawin niya
-    music.play();
+        function openFolder(id) {
+            const wrapper = document.getElementById('main-wrapper');
+            const folder = document.getElementById('folder-' + id);
+            const deck = folder.querySelector('.card-deck');
+            if(folder.classList.contains('is-open')) return;
+            wrapper.classList.add('has-open-folder');
+            folder.classList.add('is-open');
+
+            let imagesHTML = '';
+            const pathPrefix = id === 'wfriends' ? 'WFRIENDS' : id.toUpperCase();
+            for(let i=1; i <= counts[id]; i++) {
+                const src = `/${pathPrefix}/${i}.jpg`;
+                imagesHTML += `<div class="card" onclick="openLightbox('${src}')"><img src="${src}" loading="lazy"></div>`;
+            }
+            deck.innerHTML = imagesHTML;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function closeFolder() {
+            const wrapper = document.getElementById('main-wrapper');
+            wrapper.classList.remove('has-open-folder');
+            document.querySelectorAll('.folder-container').forEach(f => {
+                if(!f.classList.contains('is-open')) return;
+                f.classList.remove('is-open');
+                const id = f.id.replace('folder-', '');
+                const prefix = id === 'wfriends' ? 'WFRIENDS' : id.toUpperCase();
+                f.querySelector('.card-deck').innerHTML = `<div class="card"><img src="/${prefix}/1.jpg"></div><div class="card"><img src="/${prefix}/2.jpg"></div>`;
+            });
+        }
+
+        function openLightbox(src) {
+    const lb = document.getElementById('lightbox');
+    const content = document.getElementById('lightbox-content');
+    lb.style.display = 'flex';
     
-    // Optional: Dagdagan natin ng animation para alam nilang "Active" yung music
-    const icon = document.getElementById('music-icon');
-    icon.classList.add('playing'); 
+    // Checks if it's a video or image and keeps them in the same Polaroid frame
+    if(src.endsWith('.mp4')) {
+        content.innerHTML = `<video src="${src}" controls autoplay loop></video>`;
+    } else {
+        content.innerHTML = `<img src="${src}" alt="Memory View">`;
+    }
 }
 
-        // Heart Logic
-        const container = document.getElementById('heart-container');
+        function toggleMusic() {
+            const m = document.getElementById('bg-music');
+            m.paused ? m.play().catch(()=>{}) : m.pause();
+        }
+
         setInterval(() => {
             const h = document.createElement('div');
-            h.classList.add('heart');
-            h.innerHTML = ['❤️', '💖', '✨'][Math.floor(Math.random()*3)];
+            h.classList.add('heart'); h.innerHTML = '❤️';
             h.style.left = Math.random() * 100 + 'vw';
-            h.style.animationDuration = (Math.random()*5 + 5) + 's';
-            container.appendChild(h);
+            document.getElementById('heart-container').appendChild(h);
             setTimeout(() => h.remove(), 10000);
-        }, 600);
-        document.addEventListener('click', function() {
-    const music = document.getElementById('bg-music');
-    music.play();
-}, { once: true }); // Isang beses lang ito gagana para mag-start lang
+        }, 1000);
+
+        document.addEventListener('click', () => {
+            const m = document.getElementById('bg-music');
+            if(m.paused) m.play().catch(()=>{});
+        }, { once: true });
     </script>
 </body>
 </html>
