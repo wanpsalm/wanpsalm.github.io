@@ -169,11 +169,31 @@
             .folder-container.is-open .card-deck { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 600px) {
-            .folder-container.is-open .card-deck { grid-template-columns: 1fr; }
-            .folder-container { width: 100%; }
-            .video-grid { grid-template-columns: 1fr; }
-            #back-btn { top: 130px; width: 85%; }
-        }
+    /* Pinanatiling 3 cards per row para sa professional look sa mobile */
+    .folder-container.is-open .card-deck { 
+        grid-template-columns: repeat(3, 1fr) !important; 
+        gap: 10px; /* Mas maliit na gap para kumasya sa maliit na screen */
+        padding: 0 5px;
+    }
+
+    /* In-adjust ang height ng card para hindi magmukhang masyadong mahaba */
+    .folder-container.is-open .card { 
+        height: 180px; 
+        padding: 5px 5px 25px; /* Mas maliit na padding para sa mobile polaroid */
+    }
+
+    /* Fixed visibility para sa Back Button */
+    #back-btn { 
+        top: 100px; 
+        width: 90%; 
+        font-size: 0.8rem;
+        padding: 10px;
+    }
+
+    /* Video grid ay mananatiling 1 o 2 para sa better viewing */
+    .video-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .video-card video { height: 250px; }
+}
     </style>
 </head>
 <body>
@@ -287,7 +307,7 @@
             });
         }
         
-        
+
 
         function openLightbox(src) {
     const lb = document.getElementById('lightbox');
