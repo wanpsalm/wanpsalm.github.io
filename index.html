@@ -573,11 +573,14 @@ function closeAllFolders() {
         }
 
         function toggleMusic() {
-            const m = document.getElementById('bg-music');
-            const i = document.getElementById('music-icon');
-            if (m.paused) { m.play(); i.innerHTML = '❤️'; }
-            else { m.pause(); i.innerHTML = '🎵'; }
-        }
+    const music = document.getElementById('bg-music');
+    // Kahit i-click, laging "play" lang ang gagawin niya
+    music.play();
+    
+    // Optional: Dagdagan natin ng animation para alam nilang "Active" yung music
+    const icon = document.getElementById('music-icon');
+    icon.classList.add('playing'); 
+}
 
         // Heart Logic
         const container = document.getElementById('heart-container');
@@ -590,6 +593,10 @@ function closeAllFolders() {
             container.appendChild(h);
             setTimeout(() => h.remove(), 10000);
         }, 600);
+        document.addEventListener('click', function() {
+    const music = document.getElementById('bg-music');
+    music.play();
+}, { once: true }); // Isang beses lang ito gagana para mag-start lang
     </script>
 </body>
 </html>
