@@ -91,16 +91,59 @@
         }
 
         nav { 
-            background: white; 
-            padding: 20px; 
-            display: flex; 
-            justify-content: center; 
-            gap: 30px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px); 
+            padding: 15px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05); 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
         }
-        
-        nav a { text-decoration: none; color: var(--text); font-weight: 500; }
-        nav a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        nav a { text-decoration: none; color: var(--text); font-weight: 500; transition: 0.3s; font-size: 1.1rem; }
+        nav a:hover { color: var(--primary); }
+        .active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+
+        /* Dropdown Logic */
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-trigger { font-family: 'Quicksand', sans-serif; font-weight: 500; font-size: 1.1rem; color: var(--text); cursor: pointer; padding: 10px 0; }
+        .dropdown:hover .dropdown-trigger { color: var(--primary); }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--white);
+            min-width: 160px;
+            box-shadow: var(--shadow);
+            border-radius: 12px;
+            overflow: hidden;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1001;
+            padding: 5px;
+        }
+
+        .dropdown:hover .dropdown-content { display: block; animation: fadeInMenu 0.3s ease; }
+        @keyframes fadeInMenu { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+        .tab-btn { 
+            display: block; width: 100%; text-align: left;
+            background: none; border: none; font-family: 'Quicksand', sans-serif; 
+            font-size: 1rem; font-weight: 700; color: var(--text); cursor: pointer; 
+            padding: 12px 15px; transition: 0.3s; border-radius: 8px;
+            text-transform: uppercase;
+        }
+        .tab-btn.active { background-color: var(--primary); color: var(--white); }
+        .tab-btn:hover:not(.active) { background-color: var(--secondary); color: var(--primary); }
+
+        /* Main Container */
+        .main-container { max-width: 1300px; margin: auto; padding: 40px 20px; min-height: 80vh; }
+        .tab-content { display: none; animation: fadeIn 0.5s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .letter-container { padding: 80px 20px; display: flex; justify-content: center; position: relative; }
 
@@ -227,9 +270,14 @@
     <div id="content-wrapper">
         <nav>
             <a href="../index.html">Our Story</a>
-            <a href="gallery.html">Albums</a>
-            <a href="game.html">The Surprise</a>
-            <a href="letter.html" class="active">My Letter</a>
+        <div class="dropdown">
+            <div class="dropdown-trigger">Albums ▾</div>
+            <div class="dropdown-content">
+                <button class="tab-btn active" id="btn-photos" onclick="goToGallery('photos')">📸 Photos</button>
+                <button class="tab-btn" id="btn-videos" onclick="goToGallery('videos')">🎥 Videos</button>
+            </div>
+        </div>
+        <a href="/HTML/game.html">The Surprise</a>
         </nav>
 
         <section class="letter-container">
@@ -328,6 +376,12 @@
                 e.preventDefault();
             }, { passive: false });
         }
+
+        function goToGallery(type) {
+    // Lilipat sa gallery.html at magdadala ng "tab" parameter
+    window.location.href = '/HTML/gallery.html?tab=' + type;
+}
+    </script>
     </script>
 </body>
 </html>
