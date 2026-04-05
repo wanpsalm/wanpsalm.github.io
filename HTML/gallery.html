@@ -4,75 +4,184 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Memories | Gallery</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/CSS/gallery.css">
-</head>
-<body>
-
-    <div class="background-hearts" id="heart-container"></div>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
     
-    <nav>
-        <a href="../index.html">Our Story</a>
-        <div class="dropdown">
-            <div class="dropdown-trigger">Albums ▾</div>
-            <div class="dropdown-content">
-                <button class="tab-btn active" id="btn-photos" onclick="switchTab(event, 'photos')">📸 Photos</button>
-                <button class="tab-btn" id="btn-videos" onclick="switchTab(event, 'videos')">🎥 Videos</button>
+    <style>
+        body { font-family: 'Quicksand', sans-serif; background-color: #fdfaf8; color: #4a3a3a; }
+        .font-dancing { font-family: 'Dancing Script', cursive; }
+        .font-signature { font-family: 'Great Vibes', cursive; text-transform: none; }
+
+        /* 1. LOGO DRAWING ANIMATION */
+        .drawing-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawLine 6s ease-out forwards;
+            filter: drop-shadow(0 0 4px rgba(255, 77, 109, 0.2));
+        }
+        @keyframes drawLine { to { stroke-dashoffset: 0; } }
+
+        /* 2. RESPONSIVE BUTTONS & UI */
+        #music-trigger { transition: all 0.3s ease; }
+        @media (max-width: 768px) {
+            .logo-box { width: 160px; margin-top: -10px;}
+            .nav-link-item { font-size: 12px !important; padding: 0 -2px !important; }
+            .btn-surprise { padding: 6px 10px !important; font-size: 12px !important; margin-left: -10px !important; }
+        }
+
+        @media (max-width: 380px) {
+            .logo-box { width: 85px; }
+            .nav-link-item { font-size: 13px !important; padding: 0 5px !important; }
+        }
+
+        /* 3. NAV SCALING */
+        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; width: 100%; height: 100%; }
+        .logo-box { width: 160px; transition: width 0.3s ease; flex-shrink: 0; }
+        @media (max-width: 768px) {
+            .logo-box { width: 160px; margin-top: -10px;}
+            .nav-link-item { font-size: 12px !important; padding: 0 -2px !important; }
+            .btn-surprise { padding: 6px 10px !important; font-size: 12px !important; margin-left: -10px !important; }
+        }
+
+        @media (max-width: 380px) {
+            .logo-box { width: 85px; }
+            .nav-link-item { font-size: 13px !important; padding: 0 5px !important; }
+        }
+
+        /* 4. HEARTS & GRAIN */
+        .grain-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://grainy-gradients.vercel.app/noise.svg'); opacity: 0.03; pointer-events: none; z-index: 40; }
+        @keyframes float { 0% { transform: translateY(0px) rotate(0deg); opacity: 0; } 50% { opacity: 0.8; } 100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }
+        .heart { position: fixed; bottom: -10%; user-select: none; pointer-events: none; z-index: 5; animation: float 10s linear infinite; }
+        
+        .polaroid-frame { background: #ffffff; padding: 8px 8px 24px 8px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); border: 1px solid rgba(0,0,0,0.02); transition: all 0.5s ease; width: 100%; position: relative; z-index: 10; }
+        @media (min-width: 768px) { .polaroid-frame { padding: 12px 12px 48px 12px; } .polaroid-frame:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(255, 77, 109, 0.12); z-index: 20; } }
+        .polaroid-content { aspect-ratio: 1 / 1.1; object-fit: cover; width: 100%; display: block; }
+        #scroll-progress { position: fixed; top: 0; left: 0; height: 3px; background: #ff4d6d; width: 0%; z-index: 2000; }
+    </style>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { primary: '#ff4d6d', secondary: '#ffccd5', accent: '#fff0f3' } } } }
+    </script>
+</head>
+<body class="overflow-x-hidden antialiased">
+
+    <div class="grain-overlay"></div>
+    <div id="scroll-progress"></div>
+
+    <nav class="sticky top-0 bg-white/70 backdrop-blur-xl border-b border-gray-100 z-[1000] shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 nav-wrapper">
+            <div class="logo-box">
+                <svg viewBox="0 0 180 60" class="font-signature w-full h-full">
+                    <text x="0" y="45" fill="none" stroke="#ff4d6d" stroke-width="1.5" class="drawing-path text-3xl">Our Story</text>
+                    <text id="final-text" x="0" y="45" fill="#ff4d6d" class="opacity-0 transition-opacity duration-1000 text-3xl">Our Story</text>
+                </svg>
+            </div>
+        <div class="flex items-center gap-6 md:gap-8">
+            <a href="../index.html" class="nav-link-item font-medium text-gray-600 hover:text-primary transition-colors">Timeline</a>
+            
+            <div class="relative group">
+            <button class="nav-link-item font-medium hover:text-primary py-2">Albums ▾</button>
+            <div class="absolute left-1/2 -translate-x-1/2 hidden group-hover:block bg-white shadow-xl rounded-xl p-2 min-w-[160px] animate-in fade-in slide-in-from-top-2">
+                <button onclick="switchTab('photos')" class="w-full text-left px-4 py-2 hover:bg-secondary rounded-lg transition-colors">📸 Photos</button>
+                <button onclick="switchTab('videos')" class="w-full text-left px-4 py-2 hover:bg-secondary rounded-lg transition-colors">🎥 Videos</button>
             </div>
         </div>
-        <a href="/HTML/game.html">The Surprise</a>
-    </nav>
 
-    <button id="back-btn" onclick="closeFolder()">← BACK TO ALBUMS</button>
-
-    <div class="main-container" id="main-wrapper">
-        <div id="photos-tab" class="tab-content active">
-            <div class="photo-wrapper">
-                <div class="folder-container" id="folder-us" onclick="openFolder('us')">
-                    <h2 class="folder-title">US</h2>
-                    <div class="card-deck" id="deck-us">
-                        <div class="card"><img src="/US/1.jpg"></div>
-                        <div class="card"><img src="/US/2.jpg"></div>
-                    </div>
-                </div>
-                <div class="folder-container" id="folder-foods" onclick="openFolder('foods')">
-                    <h2 class="folder-title">FOODS</h2>
-                    <div class="card-deck" id="deck-foods">
-                        <div class="card"><img src="/FOODS/1.jpg"></div>
-                        <div class="card"><img src="/FOODS/2.jpg"></div>
-                    </div>
-                </div>
-                <div class="folder-container" id="folder-yours" onclick="openFolder('yours')">
-                    <h2 class="folder-title">YOURS</h2>
-                    <div class="card-deck" id="deck-yours">
-                        <div class="card"><img src="/YOURS/1.jpg"></div>
-                        <div class="card"><img src="/YOURS/2.jpg"></div>
-                    </div>
-                </div>
-                <div class="folder-container" id="folder-wfriends" onclick="openFolder('wfriends')">
-                    <h2 class="folder-title">WFRIENDS</h2>
-                    <div class="card-deck" id="deck-wfriends">
-                        <div class="card"><img src="/WFRIENDS/1.jpg"></div>
-                        <div class="card"><img src="/WFRIENDS/2.jpg"></div>
-                    </div>
-                </div>
-            </div>
+            <a href="/HTML/game.html" class="btn-surprise bg-primary/10 text-primary px-5 py-2 rounded-full text-sm font-bold hover:bg-primary hover:text-white transition-all shadow-sm">
+                The Surprise
+            </a>
         </div>
 
-        <div id="videos-tab" class="tab-content">
-            <div class="video-grid" id="main-video-grid">
-
-            </div>
-        </div>
     </div>
+</nav>
+    <button id="back-btn" onclick="closeFolder()" class="fixed bottom-12 right-12 hidden bg-white border border-gray-200 text-gray-800 px-8 py-3 rounded-full font-bold shadow-2xl hover:bg-primary hover:text-white transition-all z-[999]">← BACK TO ALBUMS</button>
 
+    <main class="max-w-7xl mx-auto px-4 md:px-6 py-12 relative z-10">
+        <div id="photos-tab" class="tab-content block">
+            <div id="album-select-view" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12"></div>
+            <div id="grid-spread-view" class="hidden animate-in fade-in slide-in-from-bottom-8 duration-700">
+                <div class="text-center mb-12"><h2 id="spread-title" class="font-dancing text-5xl md:text-6xl text-primary mb-4 uppercase tracking-widest"></h2><div class="h-1 w-12 bg-primary/20 mx-auto rounded-full"></div></div>
+                <div id="photo-grid"></div>
+            </div>
+        </div>
+        <div id="videos-tab" class="tab-content hidden animate-in fade-in duration-700"><div id="main-video-grid"></div></div>
+    </main>
+
+    <button id="music-trigger" onclick="toggleMusic()" class="fixed bottom-8 left-8 w-16 h-16 bg-white shadow-2xl border border-gray-100 rounded-full flex items-center justify-center text-xl z-[2000] hover:scale-110 active:scale-95 transition-all">🎵</button>
     <audio id="bg-music" loop><source src="/MUSIC/[선재 업고 튀어 (Lovely Runner) OST Part 8] 10CM - 봄눈 (Spring Snow) MV.mp3" type="audio/mpeg"></audio>
-    <div id="music-control" onclick="toggleMusic()">🎵</div>
 
-    <div id="lightbox" onclick="closeLightbox()">
-        <div id="lightbox-content" onclick="event.stopPropagation()"></div>
+    <div id="lightbox" onclick="closeLightbox()" class="fixed inset-0 bg-white/95 backdrop-blur-2xl hidden items-center justify-center z-[10000] p-4">
+        <div class="polaroid-frame relative max-w-[450px] w-full shadow-2xl animate-in zoom-in-95 duration-500" onclick="event.stopPropagation()" id="lightbox-card">
+            <div id="lightbox-media" class="w-full h-auto overflow-hidden bg-gray-50 flex items-center justify-center rounded-sm"></div>
+            <div class="flex justify-between items-center mt-4 px-2">
+                <button onclick="closeLightbox()" class="text-gray-400 hover:text-primary font-bold text-[10px] md:text-xs uppercase tracking-widest">Close</button>
+                <div id="download-anchor"></div>
+            </div>
+        </div>
     </div>
 
-    <script src="/JS/gallery.js"></script>
+    <script>
+        const config = { counts: { us: 190, foods: 5, wfriends: 25, yours: 337, videos: 28 }, folders: [{ id: 'us', name: 'Us' }, { id: 'foods', name: 'Foods' }, { id: 'yours', name: 'Fav Photo of You' }, { id: 'wfriends', name: 'W/ Friends' }] };
+        const music = document.getElementById('bg-music');
+        let isMusicPlayingBeforeVideo = false;
+
+        window.addEventListener('scroll', () => { document.getElementById("scroll-progress").style.width = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100 + "%"; });
+
+        function createHeart() {
+            const h = document.createElement('div'); h.className = 'heart'; h.innerHTML = ['❤️', '💖', '🌸', '✨'][Math.floor(Math.random() * 4)];
+            h.style.left = Math.random() * 100 + "vw"; h.style.animationDuration = (Math.random() * 5 + 5) + "s";
+            document.body.appendChild(h); setTimeout(() => h.remove(), 10000);
+        }
+        setInterval(createHeart, 500);
+
+        window.addEventListener('click', () => { if (music.paused && !music.dataset.manualPause) { music.play().then(() => { music.dataset.isPlaying = "true"; }).catch(e => {}); } }, { once: true });
+
+        function initAlbumView() {
+            document.getElementById('album-select-view').classList.remove('hidden'); document.getElementById('grid-spread-view').classList.add('hidden'); document.getElementById('back-btn').classList.add('hidden');
+            document.getElementById('album-select-view').innerHTML = config.folders.map(f => `
+                <div class="folder-container group cursor-pointer text-center" onclick="openFolder('${f.id}')">
+                    <div class="album-stack-container mb-8 w-[200px] h-[240px] relative mx-auto">
+                        <div class="polaroid-stack absolute inset-0 polaroid-frame rotate-[-4deg] z-20 group-hover:rotate-0 transition-transform"><img src="/${f.id.toUpperCase()}/1.jpg" class="w-full h-full object-cover rounded-sm"></div>
+                        <div class="polaroid-stack absolute inset-0 polaroid-frame rotate-[4deg] z-10 group-hover:rotate-0 transition-transform"><img src="/${f.id.toUpperCase()}/2.jpg" class="w-full h-full object-cover rounded-sm"></div>
+                    </div><h2 class="font-dancing text-3xl text-gray-800 group-hover:text-primary transition-colors">${f.name}</h2>
+                </div>`).join('');
+        }
+
+        function openFolder(id) {
+            document.getElementById('album-select-view').classList.add('hidden'); document.getElementById('grid-spread-view').classList.remove('hidden'); document.getElementById('back-btn').classList.replace('hidden', 'flex');
+            const grid = document.getElementById('photo-grid'); document.getElementById('spread-title').innerText = id;
+            grid.className = "grid grid-cols-3 gap-2 md:gap-8 max-w-6xl mx-auto";
+            const prefix = id === 'wfriends' ? 'WFRIENDS' : id.toUpperCase();
+            let html = '';
+            for(let i = 1; i <= config.counts[id]; i++) { html += `<div class="polaroid-frame cursor-zoom-in" style="padding: 4px 4px 12px 4px;" onclick="openLightbox('/${prefix}/${i}.jpg')"><img src="/${prefix}/${i}.jpg" loading="lazy" class="polaroid-content"></div>`; }
+            grid.innerHTML = html; window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function switchTab(name) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            document.getElementById(`${name}-tab`).classList.remove('hidden');
+            if(name === 'videos') loadVideos(); else initAlbumView();
+        }
+
+        function loadVideos() {
+            const grid = document.getElementById('main-video-grid'); grid.className = "grid grid-cols-3 gap-2 md:gap-8 max-w-6xl mx-auto";
+            grid.innerHTML = Array.from({ length: config.counts.videos }, (_, i) => `<div class="polaroid-frame cursor-pointer" style="padding: 4px 4px 12px 4px;" onclick="openLightbox('/VIDEOS/${i+1}.mp4')"><video src="/VIDEOS/${i+1}.mp4" muted loop autoplay playsinline class="polaroid-content"></video></div>`).join('');
+        }
+
+        function openLightbox(src) {
+            document.getElementById('lightbox').classList.replace('hidden', 'flex');
+            if (src.toLowerCase().endsWith('.mp4')) { isMusicPlayingBeforeVideo = !music.paused; music.pause(); document.getElementById('lightbox-media').innerHTML = `<video src="${src}" controls autoplay loop class="w-full h-auto bg-black rounded-sm"></video>`; }
+            else { document.getElementById('lightbox-media').innerHTML = `<img src="${src}" class="w-full h-auto rounded-sm">`; }
+            document.getElementById('download-anchor').innerHTML = `<a href="${src}" download="${src.split('/').pop()}" class="bg-gray-900 text-white px-3 py-1.5 md:px-4 md:py-2 rounded-lg text-[9px] md:text-xs font-bold hover:bg-primary transition-all">Download</a>`;
+        }
+
+        function closeLightbox() { document.getElementById('lightbox').classList.replace('flex', 'hidden'); document.getElementById('lightbox-media').innerHTML = ''; if (isMusicPlayingBeforeVideo) music.play(); }
+        function toggleMusic() { if (music.paused) { music.play(); music.dataset.manualPause = ""; } else { music.pause(); music.dataset.manualPause = "true"; } }
+        function closeFolder() { initAlbumView(); }
+
+        window.onload = () => {
+            initAlbumView();
+            setTimeout(() => { document.getElementById('final-text').classList.replace('opacity-0', 'opacity-100'); }, 5500);
+        };
+    </script>
 </body>
 </html>
