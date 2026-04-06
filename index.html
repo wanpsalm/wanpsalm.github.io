@@ -47,22 +47,49 @@
             .btn-surprise { padding: 8px 12px !important; font-size: 10px !important; margin-left: -10px !important; }
         }
 
-        /* 5. Timeline & Modal Polish */
-        .timeline-card {
-            transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
-            cursor: pointer;
-        }
-        .timeline-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(255, 77, 109, 0.12);
-            border-color: #ff4d6d;
+        /* 5. RESTORED DASHED TIMELINE UI */
+        .timeline-dot {
+            position: absolute;
+            left: -9px;
+            top: 0.25rem;
+            width: 1rem;
+            height: 1rem;
+            background-color: #ff4d6d;
+            border-radius: 9999px;
+            transition: transform 0.3s;
+            box-shadow: 0 0 10px rgba(255, 77, 109, 0.5);
+            z-index: 10;
         }
 
-        /* 6. PHOTO DECK STACK LOGIC */
+        .timeline-card {
+            position: relative;
+            padding-left: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .timeline-card:hover .timeline-dot { transform: scale(1.5); }
+
+        .timeline-content-box {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            border: 1px solid rgba(255, 204, 213, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-card:hover .timeline-content-box {
+            border-color: #ff4d6d;
+            box-shadow: 0 10px 25px rgba(255, 77, 109, 0.1);
+            transform: translateX(5px);
+        }
+
+        /* 6. NOSTALGIC MODAL & CENTERED DECK */
         .modal-overlay {
             position: fixed; inset: 0;
-            background: rgba(253, 250, 248, 0.95);
-            backdrop-filter: blur(15px);
+            background: rgba(42, 34, 34, 0.85);
+            backdrop-filter: blur(12px);
             z-index: 5000;
             display: none;
             align-items: center; justify-content: center;
@@ -71,63 +98,65 @@
 
         .modal-card {
             background: white;
-            max-width: 600px; width: 100%;
+            max-width: 650px; width: 100%;
             max-height: 90vh; overflow-y: auto;
-            border-radius: 40px;
-            padding: 40px;
-            box-shadow: 0 30px 60px -12px rgba(255, 77, 109, 0.2);
-            border: 1px solid #ffccd5;
-        }
-
-        #modal-content p {
-            text-align: justify;          /* Makes the edges straight like a book */
-            text-justify: inter-word;     /* Ensures even spacing between words */
-            text-indent: 40px;            /* Adds the indent to the FIRST line */
-            line-height: 1.8;             /* Adds breathing room between lines */
-            white-space: pre-line;        /* Respects the enters you press in JS */
+            border-radius: 12px;
+            padding: 50px 40px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.4);
+            border: 1px solid #e5dace;
+            position: relative;
         }
 
         .photo-deck {
-            position: relative;
-            height: 350px;
-            margin-bottom: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: relative; height: 380px; margin-bottom: 50px;
+            display: grid; place-content: center;
         }
 
         .deck-photo {
-            position: absolute;
-            width: 200px;
-            height: 250px;
+            grid-area: 1 / 1; width: 200px; height: 250px; background: #fff;
+            padding: 10px 10px 35px 10px; box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            border: 1px solid #eee; transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+            opacity: 0; transform: scale(0.8) translateY(20px);
+        }
+
+        .deck-photo img { width: 100%; height: 180px; object-fit: cover; filter: sepia(5%) contrast(105%); }
+
+        .fan-active .deck-photo { opacity: 1; }
+        .fan-active .deck-photo:nth-child(1) { transform: translate(-110px, -15px) rotate(-15deg); }
+        .fan-active .deck-photo:nth-child(2) { transform: translate(-55px, 5px) rotate(-8deg); }
+        .fan-active .deck-photo:nth-child(3) { transform: translate(0px, -10px) rotate(2deg) scale(1.05); z-index: 50; }
+        .fan-active .deck-photo:nth-child(4) { transform: translate(55px, 8px) rotate(10deg); }
+        .fan-active .deck-photo:nth-child(5) { transform: translate(110px, -12px) rotate(18deg); }
+
+        #modal-content p { text-align: justify; text-indent: 40px; line-height: 1.8; margin-bottom: 1.5rem; color: #5d4d4d; }
+        #modal-content p::first-letter { font-family: 'Great Vibes', cursive; font-size: 2.5rem; color: #ff4d6d; float: left; margin-right: 8px; line-height: 1; }
+
+        /* Music Floating Toggle */
+        #music-toggle {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 1001;
             background: white;
-            padding: 10px 10px 35px 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border: 1px solid #eee;
-            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform-origin: center center;
+            border: 1px solid #ffccd5;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.2);
+            transition: all 0.3s ease;
         }
-
-        .deck-photo img {
-            width: 100%; height: 180px;
-            object-fit: cover; border-radius: 2px;
-        }
-
-        /* The Fan-Out Animation when Modal Opens */
-        .fan-active .deck-photo:nth-child(1) { transform: translate(-100px, -15px) rotate(-15deg); }
-        .fan-active .deck-photo:nth-child(2) { transform: translate(-50px, 5px) rotate(-8deg); }
-        .fan-active .deck-photo:nth-child(3) { transform: translate(0px, -10px) rotate(2deg); }
-        .fan-active .deck-photo:nth-child(4) { transform: translate(50px, 8px) rotate(10deg); }
-        .fan-active .deck-photo:nth-child(5) { transform: translate(100px, -12px) rotate(18deg); }
 
         @media (max-width: 640px) {
             .photo-deck { height: 280px; }
-            .deck-photo { width: 140px; height: 180px; padding: 8px 8px 25px 8px; }
-            .deck-photo img { height: 130px; }
-            .fan-active .deck-photo:nth-child(1) { transform: translate(-60px, -10px) rotate(-12deg); }
-            .fan-active .deck-photo:nth-child(2) { transform: translate(-30px, 3px) rotate(-6deg); }
-            .fan-active .deck-photo:nth-child(4) { transform: translate(30px, 5px) rotate(6deg); }
-            .fan-active .deck-photo:nth-child(5) { transform: translate(60px, -8px) rotate(12deg); }
+            .deck-photo { width: 140px; height: 180px; }
+            .fan-active .deck-photo:nth-child(1) { transform: translate(-65px, -10px) rotate(-12deg); }
+            .fan-active .deck-photo:nth-child(2) { transform: translate(-35px, 3px) rotate(-6deg); }
+            .fan-active .deck-photo:nth-child(4) { transform: translate(35px, 5px) rotate(6deg); }
+            .fan-active .deck-photo:nth-child(5) { transform: translate(65px, -8px) rotate(12deg); }
         }
     </style>
     <script>
@@ -145,6 +174,14 @@
     <div class="grain-overlay"></div>
     <div id="heart-bg" class="fixed inset-0 pointer-events-none z-0"></div>
 
+    <audio id="bg-music" loop>
+        <source src="/MUSIC/Over October - Intertwine (Official Lyric Video) ft. The Ridleys.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="music-toggle" onclick="toggleMusic()">
+        <span id="music-icon">🎵</span>
+    </div>
+
     <nav class="sticky top-0 bg-white/70 backdrop-blur-xl border-b border-gray-100 z-[1000] shadow-sm">
         <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 nav-wrapper">
             <div class="logo-box">
@@ -153,7 +190,6 @@
                     <text id="final-text" x="0" y="45" fill="#ff4d6d" class="opacity-0 transition-opacity duration-1000 text-3xl">Our Story</text>
                 </svg>
             </div>
-            
             <div class="flex items-center gap-6 md:gap-8">
                 <a href="index.html" class="nav-link-item font-bold text-primary border-b-2 border-primary uppercase text-xs tracking-widest">Timeline</a>
                 <div class="relative group">
@@ -175,38 +211,38 @@
         <div class="relative z-10 px-4 mt-10">
             <h1 class="font-dancing text-5xl md:text-8xl text-primary drop-shadow-md animate-bounce">Happy Monthsary, My Love.</h1>
             <div class="h-1 w-24 bg-primary/20 mx-auto mt-6 rounded-full"></div>
-            <p class="mt-6 text-sm font-bold tracking-[0.3em] uppercase text-dark/60">Tap our journey to remember</p>
+            <p class="mt-6 text-sm font-bold tracking-[0.3em] uppercase text-dark/60">YOU'RE ONE OF THE GREATEST PLOT IN MY LIFE</p>
         </div>
     </header>
 
     <section class="max-w-4xl mx-auto px-6 py-24 relative z-10">
-        <div class="text-center mb-20">
+        <div class="text-center mb-16">
             <h2 class="font-dancing text-6xl text-primary mb-4">Our Chapters</h2>
-            <p class="text-sm font-medium text-dark/40 tracking-widest uppercase italic">The beautiful story of us</p>
+            <div class="w-24 h-1 bg-secondary/40 mx-auto rounded-full"></div>
         </div>
 
-        <div class="relative border-l border-gray-200 ml-6 md:ml-0 md:mx-auto max-w-xl space-y-16">
+        <div class="relative border-l-2 border-dashed border-primary/40 ml-6 md:ml-0 md:mx-auto max-w-lg space-y-12">
             
-            <div class="relative pl-10 group" onclick="openStory('july')">
-                <div class="absolute -left-[5.5px] top-2 w-3 h-3 bg-primary rounded-full group-hover:scale-150 transition-transform ring-4 ring-accent"></div>
-                <h3 class="font-dancing text-4xl text-primary">July 2025</h3>
-                <div class="timeline-card mt-4 text-dark/80 bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
-                    <p class="leading-relaxed">The Month you made the first move HAHAHAHAHAHA</p>
+            <div class="timeline-card" onclick="openStory('july')">
+                <div class="timeline-dot"></div>
+                <h3 class="font-bold text-primary text-2xl">JULY 2025</h3>
+                <div class="timeline-content-box">
+                    <p class="text-dark/80 leading-relaxed italic">The month you made the first move HAHAHAHAHAHA...</p>
                 </div>
             </div>
 
-            <div class="relative pl-10 group" onclick="openStory('fall')">
-                <div class="absolute -left-[5.5px] top-2 w-3 h-3 bg-primary rounded-full group-hover:scale-150 transition-transform ring-4 ring-accent"></div>
-                <h3 class="font-dancing text-4xl text-primary">Aug - Oct 2025</h3>
-                <div class="timeline-card mt-4 text-dark/80 bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
-                    <p class="leading-relaxed">Late night talks and endless songs. 🍂</p>
+            <div class="timeline-card" onclick="openStory('august')">
+                <div class="timeline-dot"></div>
+                <h3 class="font-bold text-primary text-2xl">AUGUST 2025</h3>
+                <div class="timeline-content-box">
+                    <p class="text-dark/80 leading-relaxed italic">The month I started courting you silently...</p>
                 </div>
             </div>
 
-            <div class="relative pl-10 group" onclick="openStory('today')">
-                <div class="absolute -left-[5.5px] top-2 w-3 h-3 bg-primary rounded-full group-hover:scale-150 transition-transform ring-4 ring-accent"></div>
-                <h3 class="font-dancing text-4xl text-primary">Present</h3>
-                <div class="timeline-card mt-4 text-dark/80 bg-white p-6 rounded-3xl shadow-sm border border-gray-100 ring-2 ring-primary/20">
+            <div class="timeline-card" onclick="openStory('today')">
+                <div class="timeline-dot"></div>
+                <h3 class="font-bold text-primary text-2xl text-primary">Present</h3>
+                <div class="timeline-content-box ring-2 ring-primary/20">
                     <p class="leading-relaxed font-bold text-primary">Still falling for you every day. ❤️</p>
                 </div>
             </div>
@@ -228,30 +264,59 @@
     </div>
 
     <script>
+        // MUSIC LOGIC
+        const music = document.getElementById('bg-music');
+        const musicIcon = document.getElementById('music-icon');
+        let hasStarted = false;
+
+        function startMusic() {
+            if (!hasStarted) {
+                music.play().then(() => {
+                    musicIcon.innerText = "⏸️";
+                    hasStarted = true;
+                    window.removeEventListener('scroll', startMusic);
+                    window.removeEventListener('click', startMusic);
+                }).catch(e => console.log("Waiting for user interaction..."));
+            }
+        }
+
+        function toggleMusic() {
+            if (music.paused) {
+                music.play();
+                musicIcon.innerText = "⏸️";
+            } else {
+                music.pause();
+                musicIcon.innerText = "🎵";
+            }
+        }
+
+        window.addEventListener('scroll', startMusic);
+        window.addEventListener('click', startMusic);
+
+        // STORY DATA
         const storyData = {
             'july': {
-                date: "July 2025",
+                date: "JULY 2025",
                 subtitle: "The Beginning",
                 imgs: ["/US/1.jpg", "/US/2.jpg", "/US/3.jpg", "/US/4.jpg", "/US/5.jpg"],
-                text: `<p>July will always be the month of my greatest risk in love. Even now, I wonder what would have happened if you didn't like my note back then. What would we be now if I hadn't reached out? <p/>
-                    
-                <p>Kung bibigyan pa nga ako ng paulit ulit na chance kung irereach out kita sa time na to? Palagi kong gagawin without and hesitations, doubt, and second thought. <p/>
-                    
-                <p>I still remember the time you accepted my follew request and follow me back in just a couple of minutes, hindi sa pagmamayabang pero nakaramdam agad ako ng pag asa nung time na yun HAHAHAHAH though wala akong balak ipursue ka if di ka nagbibigay ng sign, pero ayun nga hanggang sa ilike mo yung notes ko HAHAHAHAHA I felt like I'm one of the luckiest kumag when you replied to my confession and gives me the answer "Hope to know you rin". dun palang feeling ko gusto mo na ako eh, HAHAHAHAHAHA eme
-                    
-                <p>Again thank you for accepting me and giving me a chance to prove myself, I'll always be thankful ay Lord, for letting me see your name sa instagram<p/>`
+                text: `<p>July will always be the month of my greatest risk in love. Even now, I wonder what would have happened if you didn't like my note back then. What would we be now if I hadn't reached out?</p>
+                       <p>Kung bibigyan pa nga ako ng paulit ulit na chance kung irereach out kita sa time na to? Palagi kong gagawin without and hesitations, doubt, and second thought.</p>
+                       <p>I still remember the time you accepted my follow request and follow me back in just a couple of minutes... nakaramdam agad ako ng pag asa nung time na yun HAHAHAHAH.</p>
+                       <p>Again thanked you for accepting me and giving me a chance to prove myself, I'll always be thankful to Lord, for letting me see your name sa instagram.</p>`
             },
-            'fall': {
-                date: "Aug - Oct 2025",
-                subtitle: "Building Us",
+            'august': {
+                date: "AUGUST 2025",
+                subtitle: "The Courting",
                 imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg"],
-                text: "From our first shared meals to realizing we shared the same soul. Those nights made me love you more."
+                text: `<p>From our first shared meals to realizing we shared the same soul. Those nights made me love you more.</p>
+                       <p>It wasn't just about courting; it was about discovering the person I want to be with forever.</p>`
             },
             'today': {
                 date: "Today",
                 subtitle: "Always You",
                 imgs: ["/YOURS/1.jpg", "/YOURS/2.jpg"],
-                text: "Every second spent with you is my favorite second. I'm so lucky you're mine."
+                text: `<p>Every second spent with you is my favorite second. I'm so lucky you're mine.</p>
+                       <p>I continue to choose you, today and every day after. You are the best plot twist in my life story. Mahal na mahal kita.</p>`
             }
         };
 
@@ -262,25 +327,15 @@
             
             let photoDeckHtml = '<div class="photo-deck">';
             data.imgs.forEach((url, i) => {
-                photoDeckHtml += `
-                    <div class="deck-photo" style="z-index: ${i}">
-                        <img src="${url}" alt="Memory">
-                    </div>`;
+                photoDeckHtml += `<div class="deck-photo" style="z-index: ${i}"><img src="${url}" alt="Memory"></div>`;
             });
             photoDeckHtml += '</div>';
 
-            document.getElementById('modal-content').innerHTML = `
-                ${photoDeckHtml}
-                <p class="text-dark/80 leading-relaxed font-medium text-center">${data.text}</p>
-            `;
-            
+            document.getElementById('modal-content').innerHTML = photoDeckHtml + data.text;
             document.getElementById('story-modal').style.display = 'flex';
             document.body.style.overflow = 'hidden';
             
-            // Trigger Fan-Out Animation after a tiny delay
-            setTimeout(() => {
-                document.getElementById('modal-card').classList.add('fan-active');
-            }, 50);
+            setTimeout(() => { document.getElementById('modal-card').classList.add('fan-active'); }, 50);
         }
 
         function closeStory() {
