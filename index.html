@@ -137,12 +137,16 @@
         }
 
         @media (max-width: 640px) {
-            .photo-deck { height: 280px; }
-            .deck-photo { width: 140px; height: 180px; }
-            .fan-active .deck-photo:nth-child(1) { transform: translate(-65px, -10px) rotate(-12deg); }
-            .fan-active .deck-photo:nth-child(2) { transform: translate(-35px, 3px) rotate(-6deg); }
-            .fan-active .deck-photo:nth-child(4) { transform: translate(35px, 5px) rotate(6deg); }
-            .fan-active .deck-photo:nth-child(5) { transform: translate(65px, -8px) rotate(12deg); }
+            .photo-deck { height: 280px; margin-bottom: 30px;}
+            .deck-photo { width: 130px; height: 160px; padding: 6px 6px 20px 6px;}
+            .deck-photo img { height: 110px; }
+
+    /* Binawasan natin ang "translate" (yung pag-spread) para hindi lumabas sa screen */
+            .modal-card.fan-active .deck-photo:nth-child(1) { transform: translate(-60px, -10px) rotate(-12deg) scale(0.9); }
+            .modal-card.fan-active .deck-photo:nth-child(2) { transform: translate(-30px, 3px) rotate(-6deg) scale(0.95); }
+            .modal-card.fan-active .deck-photo:nth-child(3) { transform: translate(0px, -5px) rotate(2deg) scale(1.02); }
+            .modal-card.fan-active .deck-photo:nth-child(4) { transform: translate(30px, 5px) rotate(6deg) scale(0.95); }
+            .modal-card.fan-active .deck-photo:nth-child(5) { transform: translate(60px, -8px) rotate(12deg) scale(0.9); }
         }
     </style>
     <script>
@@ -198,7 +202,7 @@
                 Hi Binibini!
             </h1>
             <div class="h-1 w-24 bg-primary/20 mx-auto mt-6 rounded-full"></div>
-            <p class="mt-6 text-sm font-bold tracking-[0.3em] uppercase text-dark/60">YOU'RE ONE OF THE GREATEST PLOT IN MY LIFE</p>
+            <p class="mt-6 text-sm font-bold tracking-[0.3em] uppercase text-dark/60">YOU'RE ONE OF THE GREATEST PLOT TWIST IN MY LIFE</p>
         </div>
     </header>
 
@@ -336,7 +340,7 @@
             'july': {
                 date: "JULY 2025",
                 subtitle: "The Beginning",
-                imgs: ["/US/1.jpg", "/US/2.jpg", "/US/3.jpg", "/US/4.jpg", "/US/5.jpg"],
+                imgs: ["/TIMELINE/1.jpg", "/TIMELINE/2.jpg"],
                 text: `<p>July will always be the month of my greatest risk in love. Even now, I wonder what would have happened if you didn't like my note back then. What would we be now if I hadn't reached out? <p/>
                     
                 <p>Kung bibigyan pa nga ako ng paulit ulit na chance kung irereach out kita sa time na to? Palagi kong gagawin without and hesitations, doubt, and second thought. <p/>
@@ -347,10 +351,14 @@
             },
             'august': {
                 date: "AUGUST 2025",
-                subtitle: "The Courting",
-                imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg"],
-                text: `<p>From our first shared meals to realizing we shared the same soul. Those nights made me love you more.</p>
-                       <p>It wasn't just about courting; it was about discovering the person I want to be with forever.</p>`
+                subtitle: "Start of Courting",
+                imgs: [],
+                text: `
+                <p>This is the month when we met for the first time. Actually, August is one of my favorite months with you.</p>
+                <p>"August 29, 2025". This was the day when I finally had the courage to invite you to eat out, And you said "Yes", Believe it or not, super butterflies in my stomach talaga ako nung time na 'yan. Sobrang excited ko kasi first time nating magkaharap nang matagal. Usually kasi sa school, malayo ka or busy makipag-usap, kaya sobrang saya ko nung nag-yes ka. Kahit saglit lang tayo nun, okay na ako—alam ko naman kasing mahirap sumakay pauwi sa inyo at mahaba ang pila.<P/>
+                <P>Nung nasa Mixue tayo, honestly, natitig talaga ako sa eyes and smile mo. If napansin mong nakatitig ako, 'yun talaga ang reason. I’m just so glad na our first meet went really well. Ang galing din kasi end na ng August nun, so bago pa mag-birth month ko, nakapag-date na tayo in person."<p/>
+                <p>This was the moment na sinabi ko sa sarili ko "I'm gonna pursue her, No matter what"<p/><bt>
+                <p>PS. WE DON'T HAVE PICTURES THAT TIME KASI DI PA TAYO GANUN KA CLOSE HAHAHAHA<p/>`
             },
             'september': {
                 date: "SEPTEMBER 2025",
@@ -397,7 +405,7 @@
             'march': {
                 date: "MARCH 2026",
                 subtitle: "The Courting",
-                imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg"],
+                imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg", "/FOODS/2.jpg"],
                 text: `<p>From our first shared meals to realizing we shared the same soul. Those nights made me love you more.</p>
                        <p>It wasn't just about courting; it was about discovering the person I want to be with forever.</p>`
             },
@@ -416,22 +424,40 @@
         };
 
         function openStory(key) {
-            const data = storyData[key];
-            document.getElementById('modal-date').innerText = data.date;
-            document.getElementById('modal-subtitle').innerText = data.subtitle;
-            
-            let photoDeckHtml = '<div class="photo-deck">';
-            data.imgs.forEach((url, i) => {
-                photoDeckHtml += `<div class="deck-photo" style="z-index: ${i}"><img src="${url}" alt="Memory"></div>`;
-            });
-            photoDeckHtml += '</div>';
+    const data = storyData[key];
+    document.getElementById('modal-date').innerText = data.date;
+    document.getElementById('modal-subtitle').innerText = data.subtitle;
+    
+    // 1. Check kung may laman ang images
+    let photoDeckHtml = '';
+    if (data.imgs && data.imgs.length > 0) {
+        const count = data.imgs.length;
+        photoDeckHtml = `<div class="photo-deck">
+            ${data.imgs.map((url, i) => {
+                const offset = (i - (count - 1) / 2) * 60; 
+                const rotation = (i - (count - 1) / 2) * 8;
+                return `<div class="deck-photo" style="z-index: ${i}; transform: translate(${offset}px, 0px) rotate(${rotation}deg); opacity: 1;">
+                            <img src="${url}" alt="Memory">
+                        </div>`;
+            }).join('')}
+        </div>`;
+    }
 
-            document.getElementById('modal-content').innerHTML = photoDeckHtml + data.text;
-            document.getElementById('story-modal').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-            
-            setTimeout(() => { document.getElementById('modal-card').classList.add('fan-active'); }, 50);
+    // 2. Inject content (Kung walang image, text lang ang lilitaw at aangat ito)
+    document.getElementById('modal-content').innerHTML = photoDeckHtml + data.text;
+    
+    const modal = document.getElementById('story-modal');
+    modal.style.display = 'flex';
+    
+    setTimeout(() => { 
+        modal.classList.add('active'); 
+        // Trigger fan animation lang kung may images
+        if (data.imgs.length > 0) {
+            document.getElementById('modal-card').parentElement.classList.add('fan-active'); 
         }
+    }, 10);
+    document.body.style.overflow = 'hidden';
+}
 
         function closeStory() {
             document.getElementById('modal-card').classList.remove('fan-active');
