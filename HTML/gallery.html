@@ -8,11 +8,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Quicksand', sans-serif; background-color: #fdfaf8; color: #4a3a3a; }
+        /* 1. MATCHING NOSTALGIC PAPER BACKGROUND */
+        body { 
+            font-family: 'Quicksand', sans-serif; 
+            background: linear-gradient(to right, #fdfaf8, #f5efeb, #fdfaf8); 
+            color: #4a3a3a; 
+        }
         .font-dancing { font-family: 'Dancing Script', cursive; }
         .font-signature { font-family: 'Great Vibes', cursive; text-transform: none; }
 
-        /* 1. LOGO DRAWING ANIMATION */
+        /* 2. LOGO DRAWING ANIMATION */
         .drawing-path {
             stroke-dasharray: 1000;
             stroke-dashoffset: 1000;
@@ -21,26 +26,13 @@
         }
         @keyframes drawLine { to { stroke-dashoffset: 0; } }
 
-        /* 2. RESPONSIVE BUTTONS & UI */
-        #music-trigger { transition: all 0.3s ease; }
-        @media (max-width: 768px) {
-            .logo-box { width: 160px; margin-top: -10px;}
-            .nav-link-item { font-size: 12px !important; padding: 0 -2px !important; }
-            .btn-surprise { padding: 6px 10px !important; font-size: 12px !important; margin-left: -10px !important; }
-        }
-
-        @media (max-width: 380px) {
-            .logo-box { width: 85px; }
-            .nav-link-item { font-size: 13px !important; padding: 0 5px !important; }
-        }
-
-        /* 3. NAV SCALING */
+        /* 3. RESPONSIVE NAV SCALING */
         .nav-wrapper { display: flex; justify-content: space-between; align-items: center; width: 100%; height: 100%; }
         .logo-box { width: 160px; transition: width 0.3s ease; flex-shrink: 0; }
+
         @media (max-width: 768px) {
-            .logo-box { width: 160px; margin-top: -10px;}
-            .nav-link-item { font-size: 12px !important; padding: 0 -2px !important; }
-            .btn-surprise { padding: 6px 10px !important; font-size: 12px !important; margin-left: -10px !important; }
+            .logo-box { width: 150px; margin-top: -10px;}
+            .nav-link-item { font-size: 11px !important; padding: 0 4px !important; margin: 0 3px !important;}
         }
 
         @media (max-width: 380px) {
@@ -57,6 +49,23 @@
         @media (min-width: 768px) { .polaroid-frame { padding: 12px 12px 48px 12px; } .polaroid-frame:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(255, 77, 109, 0.12); z-index: 20; } }
         .polaroid-content { aspect-ratio: 1 / 1.1; object-fit: cover; width: 100%; display: block; }
         #scroll-progress { position: fixed; top: 0; left: 0; height: 3px; background: #ff4d6d; width: 0%; z-index: 2000; }
+
+        /* FIXED SIZE LIGHTBOX FIX */
+        #lightbox-media {
+            width: 100%;
+            aspect-ratio: 1 / 1.2; /* Fixed aspect ratio like a physical polaroid */
+            background-color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        #lightbox-media video, #lightbox-media img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* Video adjusts to polaroid, not polaroid to video */
+        }
     </style>
     <script>
         tailwind.config = { theme: { extend: { colors: { primary: '#ff4d6d', secondary: '#ffccd5', accent: '#fff0f3' } } } }
@@ -75,45 +84,48 @@
                     <text id="final-text" x="0" y="45" fill="#ff4d6d" class="opacity-0 transition-opacity duration-1000 text-3xl">Our Story</text>
                 </svg>
             </div>
-        <div class="flex items-center gap-6 md:gap-8">
-            <a href="../index.html" class="nav-link-item font-medium text-gray-600 hover:text-primary transition-colors">Timeline</a>
             
-            <div class="relative group">
-            <button class="nav-link-item font-medium hover:text-primary py-2">Albums ▾</button>
-            <div class="absolute left-1/2 -translate-x-1/2 hidden group-hover:block bg-white shadow-xl rounded-xl p-2 min-w-[160px] animate-in fade-in slide-in-from-top-2">
-                <button onclick="switchTab('photos')" class="w-full text-left px-4 py-2 hover:bg-secondary rounded-lg transition-colors">📸 Photos</button>
-                <button onclick="switchTab('videos')" class="w-full text-left px-4 py-2 hover:bg-secondary rounded-lg transition-colors">🎥 Videos</button>
+            <div class="flex items-center gap-6 md:gap-8">
+                <a href="../index.html" class="nav-link-item font-bold text-gray-400 hover:text-primary transition-all uppercase text-xs tracking-widest">Timeline</a>
+                <div class="relative group">
+                    <button class="nav-link-item font-bold text-primary border-b-2 border-primary uppercase text-xs tracking-widest py-2">Albums ▾</button>
+                    <div class="absolute left-1/2 -translate-x-1/2 hidden group-hover:block bg-white shadow-xl rounded-xl p-2 min-w-[160px] animate-in fade-in slide-in-from-top-2 border border-gray-50">
+                        <button onclick="switchTab('photos')" class="w-full text-left px-4 py-2 hover:bg-accent rounded-lg transition-colors text-xs font-bold uppercase text-dark/70">📸 Photos</button>
+                        <button onclick="switchTab('videos')" class="w-full text-left px-4 py-2 hover:bg-accent rounded-lg transition-colors text-xs font-bold uppercase text-dark/70">🎥 Videos</button>
+                    </div>
+                </div>
             </div>
         </div>
+    </nav>
 
-            <a href="/HTML/game.html" class="btn-surprise bg-primary/10 text-primary px-5 py-2 rounded-full text-sm font-bold hover:bg-primary hover:text-white transition-all shadow-sm">
-                The Surprise
-            </a>
-        </div>
-
-    </div>
-</nav>
     <button id="back-btn" onclick="closeFolder()" class="fixed bottom-12 right-12 hidden bg-white border border-gray-200 text-gray-800 px-8 py-3 rounded-full font-bold shadow-2xl hover:bg-primary hover:text-white transition-all z-[999]">← BACK TO ALBUMS</button>
 
     <main class="max-w-7xl mx-auto px-4 md:px-6 py-12 relative z-10">
         <div id="photos-tab" class="tab-content block">
             <div id="album-select-view" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12"></div>
+            
             <div id="grid-spread-view" class="hidden animate-in fade-in slide-in-from-bottom-8 duration-700">
-                <div class="text-center mb-12"><h2 id="spread-title" class="font-dancing text-5xl md:text-6xl text-primary mb-4 uppercase tracking-widest"></h2><div class="h-1 w-12 bg-primary/20 mx-auto rounded-full"></div></div>
+                <div class="text-center mb-12">
+                    <h2 id="spread-title" class="font-dancing text-5xl md:text-6xl text-primary mb-4 uppercase tracking-widest"></h2>
+                    <div class="h-1 w-12 bg-primary/20 mx-auto rounded-full"></div>
+                </div>
                 <div id="photo-grid"></div>
             </div>
         </div>
-        <div id="videos-tab" class="tab-content hidden animate-in fade-in duration-700"><div id="main-video-grid"></div></div>
+        <div id="videos-tab" class="tab-content hidden animate-in fade-in duration-700">
+            <div id="main-video-grid"></div>
+        </div>
     </main>
 
     <button id="music-trigger" onclick="toggleMusic()" class="fixed bottom-8 left-8 w-16 h-16 bg-white shadow-2xl border border-gray-100 rounded-full flex items-center justify-center text-xl z-[2000] hover:scale-110 active:scale-95 transition-all">🎵</button>
     <audio id="bg-music" loop><source src="/MUSIC/[선재 업고 튀어 (Lovely Runner) OST Part 8] 10CM - 봄눈 (Spring Snow) MV.mp3" type="audio/mpeg"></audio>
 
-    <div id="lightbox" onclick="closeLightbox()" class="fixed inset-0 bg-white/95 backdrop-blur-2xl hidden items-center justify-center z-[10000] p-4">
-        <div class="polaroid-frame relative max-w-[450px] w-full shadow-2xl animate-in zoom-in-95 duration-500" onclick="event.stopPropagation()" id="lightbox-card">
-            <div id="lightbox-media" class="w-full h-auto overflow-hidden bg-gray-50 flex items-center justify-center rounded-sm"></div>
-            <div class="flex justify-between items-center mt-4 px-2">
-                <button onclick="closeLightbox()" class="text-gray-400 hover:text-primary font-bold text-[10px] md:text-xs uppercase tracking-widest">Close</button>
+    <div id="lightbox" onclick="closeLightbox()" class="fixed inset-0 bg-black/60 backdrop-blur-xl hidden items-center justify-center z-[10000] p-4">
+        <div class="polaroid-frame relative max-w-[400px] w-full shadow-2xl animate-in zoom-in-95 duration-500" onclick="event.stopPropagation()" id="lightbox-card">
+            <div id="lightbox-media" class="rounded-sm">
+                </div>
+            <div class="flex justify-between items-center mt-6 px-2">
+                <button onclick="closeLightbox()" class="text-gray-400 hover:text-primary font-bold text-[10px] md:text-xs uppercase tracking-widest transition-colors">Close</button>
                 <div id="download-anchor"></div>
             </div>
         </div>
@@ -140,8 +152,8 @@
             document.getElementById('album-select-view').innerHTML = config.folders.map(f => `
                 <div class="folder-container group cursor-pointer text-center" onclick="openFolder('${f.id}')">
                     <div class="album-stack-container mb-8 w-[200px] h-[240px] relative mx-auto">
-                        <div class="polaroid-stack absolute inset-0 polaroid-frame rotate-[-4deg] z-20 group-hover:rotate-0 transition-transform"><img src="/${f.id.toUpperCase()}/1.jpg" class="w-full h-full object-cover rounded-sm"></div>
-                        <div class="polaroid-stack absolute inset-0 polaroid-frame rotate-[4deg] z-10 group-hover:rotate-0 transition-transform"><img src="/${f.id.toUpperCase()}/2.jpg" class="w-full h-full object-cover rounded-sm"></div>
+                        <div class="polaroid-stack absolute inset-0 polaroid-frame rotate-[-4deg] z-20 group-hover:rotate-0 transition-transform duration-300"><img src="/${f.id.toUpperCase()}/1.jpg" class="w-full h-full object-cover rounded-sm"></div>
+                        <div class="polaroid-stack absolute inset-0 polaroid-frame rotate-[4deg] z-10 group-hover:rotate-0 transition-transform duration-300"><img src="/${f.id.toUpperCase()}/2.jpg" class="w-full h-full object-cover rounded-sm"></div>
                     </div><h2 class="font-dancing text-3xl text-gray-800 group-hover:text-primary transition-colors">${f.name}</h2>
                 </div>`).join('');
         }
@@ -169,8 +181,15 @@
 
         function openLightbox(src) {
             document.getElementById('lightbox').classList.replace('hidden', 'flex');
-            if (src.toLowerCase().endsWith('.mp4')) { isMusicPlayingBeforeVideo = !music.paused; music.pause(); document.getElementById('lightbox-media').innerHTML = `<video src="${src}" controls autoplay loop class="w-full h-auto bg-black rounded-sm"></video>`; }
-            else { document.getElementById('lightbox-media').innerHTML = `<img src="${src}" class="w-full h-auto rounded-sm">`; }
+            const mediaBox = document.getElementById('lightbox-media');
+            
+            if (src.toLowerCase().endsWith('.mp4')) { 
+                isMusicPlayingBeforeVideo = !music.paused; 
+                music.pause(); 
+                mediaBox.innerHTML = `<video src="${src}" controls autoplay loop class="w-full h-full"></video>`; 
+            } else { 
+                mediaBox.innerHTML = `<img src="${src}" class="w-full h-full">`; 
+            }
             document.getElementById('download-anchor').innerHTML = `<a href="${src}" download="${src.split('/').pop()}" class="bg-gray-900 text-white px-3 py-1.5 md:px-4 md:py-2 rounded-lg text-[9px] md:text-xs font-bold hover:bg-primary transition-all">Download</a>`;
         }
 
@@ -180,7 +199,10 @@
 
         window.onload = () => {
             initAlbumView();
-            setTimeout(() => { document.getElementById('final-text').classList.replace('opacity-0', 'opacity-100'); }, 5500);
+            setTimeout(() => { 
+                const finalText = document.getElementById('final-text');
+                if(finalText) finalText.classList.replace('opacity-0', 'opacity-100'); 
+            }, 5500);
         };
     </script>
 </body>

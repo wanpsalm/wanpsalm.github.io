@@ -39,12 +39,11 @@
 
         /* 4. Responsive Nav Scaling */
         .nav-wrapper { display: flex; justify-content: space-between; align-items: center; width: 100%; height: 100%; }
-        .logo-box { width: 160px; transition: width 0.3s ease; flex-shrink: 0; }
+        .logo-box { width: 200px; margin-top: -15px; transition: width 0.3s ease; flex-shrink: 0; }
 
         @media (max-width: 768px) {
             .logo-box { width: 150px; margin-top: -10px;}
             .nav-link-item { font-size: 11px !important; padding: 0 4px !important; margin: 0 3px !important;}
-            .btn-surprise { padding: 8px 12px !important; font-size: 10px !important; margin-left: -10px !important; }
         }
 
         /* 5. RESTORED DASHED TIMELINE UI */
@@ -97,7 +96,7 @@
         }
 
         .modal-card {
-            background: white;
+            background: linear-gradient(135deg, #fffcf9 0%, #f7f1eb 100%);
             max-width: 650px; width: 100%;
             max-height: 90vh; overflow-y: auto;
             border-radius: 12px;
@@ -129,25 +128,12 @@
         .fan-active .deck-photo:nth-child(5) { transform: translate(110px, -12px) rotate(18deg); }
 
         #modal-content p { text-align: justify; text-indent: 40px; line-height: 1.8; margin-bottom: 1.5rem; color: #5d4d4d; }
-        #modal-content p::first-letter { font-family: 'Great Vibes', cursive; font-size: 2.5rem; color: #ff4d6d; float: left; margin-right: 8px; line-height: 1; }
 
-        /* Music Floating Toggle */
         #music-toggle {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            z-index: 1001;
-            background: white;
-            border: 1px solid #ffccd5;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.2);
-            transition: all 0.3s ease;
+            position: fixed; bottom: 25px; right: 25px; z-index: 1001; background: white;
+            border: 1px solid #ffccd5; width: 45px; height: 45px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.2); transition: all 0.3s ease;
         }
 
         @media (max-width: 640px) {
@@ -190,7 +176,7 @@
                     <text id="final-text" x="0" y="45" fill="#ff4d6d" class="opacity-0 transition-opacity duration-1000 text-3xl">Our Story</text>
                 </svg>
             </div>
-            <div class="flex items-center gap-6 md:gap-8">
+            <div class="flex items-center gap-6 md:gap-12">
                 <a href="index.html" class="nav-link-item font-bold text-primary border-b-2 border-primary uppercase text-xs tracking-widest">Timeline</a>
                 <div class="relative group">
                     <button class="nav-link-item font-bold text-gray-400 hover:text-primary transition-all uppercase text-xs tracking-widest py-2">Albums ▾</button>
@@ -199,8 +185,7 @@
                         <button onclick="goToGallery('videos')" class="w-full text-left px-4 py-2 hover:bg-accent rounded-lg transition-colors text-xs font-bold uppercase text-dark/70">🎥 Videos</button>
                     </div>
                 </div>
-                <a href="/HTML/game.html" class="btn-surprise bg-primary text-white px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest shadow-sm">The Surprise</a>
-            </div>
+                </div>
         </div>
     </nav>
 
@@ -209,7 +194,9 @@
              style="background-image: linear-gradient(rgba(253, 250, 248, 0.4), rgba(253, 250, 248, 0.8)), url('https://images.unsplash.com/photo-1518562180175-34a163b159c1?q=80&w=2070');">
         </div>
         <div class="relative z-10 px-4 mt-10">
-            <h1 class="font-dancing text-5xl md:text-8xl text-primary drop-shadow-md animate-bounce">Happy Monthsary, My Love.</h1>
+            <h1 class="font-dancing text-5xl md:text-8xl text-primary drop-shadow-md animate-bounce">
+                Hi Binibini!
+            </h1>
             <div class="h-1 w-24 bg-primary/20 mx-auto mt-6 rounded-full"></div>
             <p class="mt-6 text-sm font-bold tracking-[0.3em] uppercase text-dark/60">YOU'RE ONE OF THE GREATEST PLOT IN MY LIFE</p>
         </div>
@@ -227,7 +214,7 @@
                 <div class="timeline-dot"></div>
                 <h3 class="font-bold text-primary text-2xl">JULY 2025</h3>
                 <div class="timeline-content-box">
-                    <p class="text-dark/80 leading-relaxed italic">The month you made the first move HAHAHAHAHAHA...</p>
+                    <p class="text-dark/80 leading-relaxed italic">The Month You Made the First Move HAHAHAHAHAHA...</p>
                 </div>
             </div>
 
@@ -235,15 +222,71 @@
                 <div class="timeline-dot"></div>
                 <h3 class="font-bold text-primary text-2xl">AUGUST 2025</h3>
                 <div class="timeline-content-box">
-                    <p class="text-dark/80 leading-relaxed italic">The month I started courting you silently...</p>
+                    <p class="text-dark/80 leading-relaxed italic">The Month I Started Courting You Silently...</p>
+                </div>
+            </div>
+            
+            <div class="timeline-card" onclick="openStory('september')">
+                <div class="timeline-dot"></div>
+                <h3 class="font-bold text-primary text-2xl">SEPTEMBER 2025</h3>
+                <div class="timeline-content-box">
+                    <p class="text-dark/80 leading-relaxed italic">The Month I Started to Call you Binibini and our First Meal Together</p>
                 </div>
             </div>
 
+            <div class="timeline-card" onclick="openStory('october')">
+                <div class="timeline-dot"></div>
+                <h3 class="font-bold text-primary text-2xl">OCTOBER 2025</h3>
+                <div class="timeline-content-box">
+                    <p class="text-dark/80 leading-relaxed italic">The month you made the first move HAHAHAHAHAHA...</p>
+                </div>
+            </div>
+
+            <div class="timeline-card" onclick="openStory('november')">
+                <div class="timeline-dot"></div>
+                <h3 class="font-bold text-primary text-2xl">NOVEMBER 2025</h3>
+                <div class="timeline-content-box">
+                    <p class="text-dark/80 leading-relaxed italic">The month you made the first move HAHAHAHAHAHA...</p>
+                </div>
+            </div>
+
+            <div class="timeline-card" onclick="openStory('december')">
+                <div class="timeline-dot"></div>
+                <h3 class="font-bold text-primary text-2xl">DECEMBER 2025</h3>
+                <div class="timeline-content-box">
+                    <p class="text-dark/80 leading-relaxed italic">The month you made the first move HAHAHAHAHAHA...</p>
+                </div>
+            </div>
+
+            <div class="timeline-card" onclick="openStory('january')">
+                <div class="timeline-dot"></div>
+                <h3 class="font-bold text-primary text-2xl">JANUARY 2026</h3>
+                <div class="timeline-content-box">
+                    <p class="text-dark/80 leading-relaxed italic">The month you made the first move HAHAHAHAHAHA...</p>
+                </div>
+            </div>
+
+            <div class="timeline-card" onclick="openStory('february')">
+                <div class="timeline-dot"></div>
+                <h3 class="font-bold text-primary text-2xl">FEBRUARY 2026</h3>
+                <div class="timeline-content-box">
+                    <p class="text-dark/80 leading-relaxed italic">The month you made the first move HAHAHAHAHAHA...</p>
+                </div>
+            </div>
+
+            <div class="timeline-card" onclick="openStory('march')">
+                <div class="timeline-dot"></div>
+                <h3 class="font-bold text-primary text-2xl">MARCH 2026</h3>
+                <div class="timeline-content-box">
+                    <p class="text-dark/80 leading-relaxed italic">The month you made the first move HAHAHAHAHAHA...</p>
+                </div>
+            </div> 
+
             <div class="timeline-card" onclick="openStory('today')">
                 <div class="timeline-dot"></div>
-                <h3 class="font-bold text-primary text-2xl text-primary">Present</h3>
+                <h3 class="font-bold text-primary text-2xl text-primary">APRIL 2026</h3>
                 <div class="timeline-content-box ring-2 ring-primary/20">
-                    <p class="leading-relaxed font-bold text-primary">Still falling for you every day. ❤️</p>
+                    <p class="leading-relaxed font-bold text-primary">Still falling for you every day. A new surprise awaits inside... ❤️</p>
                 </div>
             </div>
 
@@ -281,13 +324,8 @@
         }
 
         function toggleMusic() {
-            if (music.paused) {
-                music.play();
-                musicIcon.innerText = "⏸️";
-            } else {
-                music.pause();
-                musicIcon.innerText = "🎵";
-            }
+            if (music.paused) { music.play(); musicIcon.innerText = "⏸️"; }
+            else { music.pause(); musicIcon.innerText = "🎵"; }
         }
 
         window.addEventListener('scroll', startMusic);
@@ -299,10 +337,13 @@
                 date: "JULY 2025",
                 subtitle: "The Beginning",
                 imgs: ["/US/1.jpg", "/US/2.jpg", "/US/3.jpg", "/US/4.jpg", "/US/5.jpg"],
-                text: `<p>July will always be the month of my greatest risk in love. Even now, I wonder what would have happened if you didn't like my note back then. What would we be now if I hadn't reached out?</p>
-                       <p>Kung bibigyan pa nga ako ng paulit ulit na chance kung irereach out kita sa time na to? Palagi kong gagawin without and hesitations, doubt, and second thought.</p>
-                       <p>I still remember the time you accepted my follow request and follow me back in just a couple of minutes... nakaramdam agad ako ng pag asa nung time na yun HAHAHAHAH.</p>
-                       <p>Again thanked you for accepting me and giving me a chance to prove myself, I'll always be thankful to Lord, for letting me see your name sa instagram.</p>`
+                text: `<p>July will always be the month of my greatest risk in love. Even now, I wonder what would have happened if you didn't like my note back then. What would we be now if I hadn't reached out? <p/>
+                    
+                <p>Kung bibigyan pa nga ako ng paulit ulit na chance kung irereach out kita sa time na to? Palagi kong gagawin without and hesitations, doubt, and second thought. <p/>
+                    
+                <p>I still remember the time you accepted my follew request and follow me back in just a couple of minutes, hindi sa pagmamayabang pero nakaramdam agad ako ng pag asa nung time na yun HAHAHAHAH though wala akong balak ipursue ka if di ka nagbibigay ng sign, pero ayun nga hanggang sa ilike mo yung notes ko HAHAHAHAHA I felt like I'm one of the luckiest kumag when you replied to my confession and gives me the answer "Hope to know you rin". dun palang feeling ko gusto mo na ako eh, HAHAHAHAHAHA eme
+                    
+                <p>Again thank you for accepting me and giving me a chance to prove myself, I'll always be thankful ay Lord, for letting me see your name sa instagram<p/>`
             },
             'august': {
                 date: "AUGUST 2025",
@@ -311,12 +352,66 @@
                 text: `<p>From our first shared meals to realizing we shared the same soul. Those nights made me love you more.</p>
                        <p>It wasn't just about courting; it was about discovering the person I want to be with forever.</p>`
             },
-            'today': {
-                date: "Today",
-                subtitle: "Always You",
+            'september': {
+                date: "SEPTEMBER 2025",
+                subtitle: "The Courting",
+                imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg"],
+                text: `<p>From our first shared meals to realizing we shared the same soul. Those nights made me love you more.</p>
+                       <p>It wasn't just about courting; it was about discovering the person I want to be with forever.</p>`
+            },
+            'october': {
+                date: "OCTOBER 2025",
+                subtitle: "The Courting",
+                imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg"],
+                text: `<p>From our first shared meals to realizing we shared the same soul. Those nights made me love you more.</p>
+                       <p>It wasn't just about courting; it was about discovering the person I want to be with forever.</p>`
+            },
+            'november': {
+                date: "NOVEMBER 2025",
+                subtitle: "The Courting",
+                imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg"],
+                text: `<p>From our first shared meals to realizing we shared the same soul. Those nights made me love you more.</p>
+                       <p>It wasn't just about courting; it was about discovering the person I want to be with forever.</p>`
+            },
+            'december': {
+                date: "DECEMBER 2025",
+                subtitle: "The Courting",
+                imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg"],
+                text: `<p>From our first shared meals to realizing we shared the same soul. Those nights made me love you more.</p>
+                       <p>It wasn't just about courting; it was about discovering the person I want to be with forever.</p>`
+            },
+            'january': {
+                date: "JANUARY 2026",
+                subtitle: "The Courting",
+                imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg"],
+                text: `<p>From our first shared meals to realizing we shared the same soul. Those nights made me love you more.</p>
+                       <p>It wasn't just about courting; it was about discovering the person I want to be with forever.</p>`
+            },
+            'february': {
+                date: "FEBRUARY 2026",
+                subtitle: "The Courting",
+                imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg"],
+                text: `<p>From our first shared meals to realizing we shared the same soul. Those nights made me love you more.</p>
+                       <p>It wasn't just about courting; it was about discovering the person I want to be with forever.</p>`
+            },
+            'march': {
+                date: "MARCH 2026",
+                subtitle: "The Courting",
+                imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg"],
+                text: `<p>From our first shared meals to realizing we shared the same soul. Those nights made me love you more.</p>
+                       <p>It wasn't just about courting; it was about discovering the person I want to be with forever.</p>`
+            },
+            'april': {
+                date: "APRIL 2026",
+                subtitle: "A New Chapter",
                 imgs: ["/YOURS/1.jpg", "/YOURS/2.jpg"],
                 text: `<p>Every second spent with you is my favorite second. I'm so lucky you're mine.</p>
-                       <p>I continue to choose you, today and every day after. You are the best plot twist in my life story. Mahal na mahal kita.</p>`
+                       <p>I continue to choose you, today and every day after. Since you've reached this far in our timeline, I have something special prepared just for you.</p>
+                       <div class="mt-8 text-center">
+                           <a href="/HTML/game.html" class="inline-block bg-primary text-white px-8 py-3 rounded-full text-xs font-black uppercase tracking-widest shadow-lg hover:scale-105 transition-transform">
+                               ✨ Open The Surprise
+                           </a>
+                       </div>`
             }
         };
 
