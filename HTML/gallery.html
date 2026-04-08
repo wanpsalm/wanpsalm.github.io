@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* 1. MATCHING NOSTALGIC PAPER BACKGROUND */
         body { 
             font-family: 'Quicksand', sans-serif; 
             background: linear-gradient(to right, #fdfaf8, #f5efeb, #fdfaf8); 
@@ -17,55 +16,94 @@
         .font-dancing { font-family: 'Dancing Script', cursive; }
         .font-signature { font-family: 'Great Vibes', cursive; text-transform: none; }
 
-        /* 2. LOGO DRAWING ANIMATION */
-        .drawing-path {
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
-            animation: drawLine 6s ease-out forwards;
-            filter: drop-shadow(0 0 4px rgba(255, 77, 109, 0.2));
-        }
+        .drawing-path { stroke-dasharray: 1000; stroke-dashoffset: 1000; animation: drawLine 6s ease-out forwards; filter: drop-shadow(0 0 4px rgba(255, 77, 109, 0.2)); }
         @keyframes drawLine { to { stroke-dashoffset: 0; } }
 
-        /* 3. RESPONSIVE NAV SCALING */
-        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; width: 100%; height: 100%; }
-        .logo-box { width: 160px; transition: width 0.3s ease; flex-shrink: 0; }
-
-        @media (max-width: 768px) {
-            .logo-box { width: 150px; margin-top: -10px;}
-            .nav-link-item { font-size: 11px !important; padding: 0 4px !important; margin: 0 3px !important;}
+        /* 1. NOTEBOOK STYLING */
+        .notebook-container {
+            background: #fffdf9;
+            border-radius: 8px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            position: relative;
+            padding: 40px;
+            min-height: 80vh;
+            border: 1px solid #e5dace;
+            transition: all 0.3s ease;
         }
 
-        @media (max-width: 380px) {
-            .logo-box { width: 85px; }
-            .nav-link-item { font-size: 13px !important; padding: 0 5px !important; }
+        .notebook-container::before {
+            content: "";
+            position: absolute;
+            left: 20px; top: 0; bottom: 0;
+            width: 30px;
+            background-image: radial-gradient(circle, #444 20%, transparent 25%);
+            background-size: 30px 30px;
+            opacity: 0.1;
         }
 
-        /* 4. HEARTS & GRAIN */
-        .grain-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://grainy-gradients.vercel.app/noise.svg'); opacity: 0.03; pointer-events: none; z-index: 40; }
-        @keyframes float { 0% { transform: translateY(0px) rotate(0deg); opacity: 0; } 50% { opacity: 0.8; } 100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }
+        /* 2. POLAROID GRID */
+        .notebook-page-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* MOBILE VIEW ADJUSTMENTS */
+        @media (max-width: 720px) {
+            .notebook-page-grid { 
+                grid-template-columns: repeat(2, 1fr); 
+                gap: 12px; 
+            }
+            .notebook-container { 
+                padding: 25px 15px 25px 35px;
+                border-radius: 4px;
+            }
+            .notebook-container::before {
+                left: 10px;
+                width: 20px;
+                background-size: 20px 20px;
+            }
+            .page-btn {
+                padding: 6px 12px !important;
+                font-size: 11px !important;
+            }
+            .logo-box { width: 120px !important; margin-top: -10px;}
+            .polaroid-frame { padding: 5px 5px 15px 5px !important; }
+        }
+
+        .polaroid-frame { 
+            background: #ffffff; 
+            padding: 10px 10px 30px 10px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            border: 1px solid rgba(0,0,0,0.03); 
+            transition: all 0.3s ease;
+            cursor: zoom-in;
+        }
+
+        .polaroid-frame:hover { transform: scale(1.02) rotate(1deg); z-index: 50; }
+        .polaroid-content { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; border-radius: 2px; }
+
+        .page-btn {
+            background: white;
+            border: 1px solid #ffccd5;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #ff4d6d;
+            transition: all 0.3s;
+        }
+        .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .page-btn:hover:not(:disabled) { background: #ff4d6d; color: white; }
+
+        .grain-overlay { position: fixed; inset: 0; background: url('https://grainy-gradients.vercel.app/noise.svg'); opacity: 0.03; pointer-events: none; z-index: 40; }
         .heart { position: fixed; bottom: -10%; user-select: none; pointer-events: none; z-index: 5; animation: float 10s linear infinite; }
-        
-        .polaroid-frame { background: #ffffff; padding: 8px 8px 24px 8px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); border: 1px solid rgba(0,0,0,0.02); transition: all 0.5s ease; width: 100%; position: relative; z-index: 10; }
-        @media (min-width: 768px) { .polaroid-frame { padding: 12px 12px 48px 12px; } .polaroid-frame:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(255, 77, 109, 0.12); z-index: 20; } }
-        .polaroid-content { aspect-ratio: 1 / 1.1; object-fit: cover; width: 100%; display: block; }
+        @keyframes float { 0% { transform: translateY(0px) rotate(0deg); opacity: 0; } 50% { opacity: 0.8; } 100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }
         #scroll-progress { position: fixed; top: 0; left: 0; height: 3px; background: #ff4d6d; width: 0%; z-index: 2000; }
 
-        /* FIXED SIZE LIGHTBOX FIX */
-        #lightbox-media {
-            width: 100%;
-            aspect-ratio: 1 / 1.2; /* Fixed aspect ratio like a physical polaroid */
-            background-color: #1a1a1a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        
-        #lightbox-media video, #lightbox-media img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain; /* Video adjusts to polaroid, not polaroid to video */
-        }
+        #lightbox-media { width: 100%; aspect-ratio: 1/1.2; background-color: #1a1a1a; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        #lightbox-media video, #lightbox-media img { max-width: 100%; max-height: 100%; object-fit: contain; }
     </style>
     <script>
         tailwind.config = { theme: { extend: { colors: { primary: '#ff4d6d', secondary: '#ffccd5', accent: '#fff0f3' } } } }
@@ -77,95 +115,140 @@
     <div id="scroll-progress"></div>
 
     <nav class="sticky top-0 bg-white/70 backdrop-blur-xl border-b border-gray-100 z-[1000] shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 nav-wrapper">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 nav-wrapper flex justify-between items-center">
             <div class="logo-box">
-                <svg viewBox="0 0 180 60" class="font-signature w-full h-full">
+                <svg viewBox="0 0 180 60" class="font-signature w-60 h-20">
                     <text x="0" y="45" fill="none" stroke="#ff4d6d" stroke-width="1.5" class="drawing-path text-3xl">Our Story</text>
                     <text id="final-text" x="0" y="45" fill="#ff4d6d" class="opacity-0 transition-opacity duration-1000 text-3xl">Our Story</text>
                 </svg>
             </div>
-            
-            <div class="flex items-center gap-6 md:gap-8">
+            <div class="flex items-center gap-4 md:gap-8">
                 <a href="../index.html" class="nav-link-item font-bold text-gray-400 hover:text-primary transition-all uppercase text-xs tracking-widest">Timeline</a>
-                <div class="relative group">
-                    <button class="nav-link-item font-bold text-primary border-b-2 border-primary uppercase text-xs tracking-widest py-2">Albums ▾</button>
-                    <div class="absolute left-1/2 -translate-x-1/2 hidden group-hover:block bg-white shadow-xl rounded-xl p-2 min-w-[160px] animate-in fade-in slide-in-from-top-2 border border-gray-50">
-                        <button onclick="switchTab('photos')" class="w-full text-left px-4 py-2 hover:bg-accent rounded-lg transition-colors text-xs font-bold uppercase text-dark/70">📸 Photos</button>
-                        <button onclick="switchTab('videos')" class="w-full text-left px-4 py-2 hover:bg-accent rounded-lg transition-colors text-xs font-bold uppercase text-dark/70">🎥 Videos</button>
-                    </div>
-                </div>
+                <button onclick="switchTab('photos')" class="nav-link-item font-bold text-primary border-b-2 border-primary uppercase text-xs tracking-widest py-2">Albums</button>
+                <button onclick="switchTab('videos')" class="nav-link-item font-bold text-gray-400 hover:text-primary transition-all uppercase text-xs tracking-widest py-2">Videos</button>
             </div>
         </div>
     </nav>
 
-    <button id="back-btn" onclick="closeFolder()" class="fixed bottom-12 right-12 hidden bg-white border border-gray-200 text-gray-800 px-8 py-3 rounded-full font-bold shadow-2xl hover:bg-primary hover:text-white transition-all z-[999]">← BACK TO ALBUMS</button>
-
     <main class="max-w-7xl mx-auto px-4 md:px-6 py-12 relative z-10">
         <div id="photos-tab" class="tab-content block">
-            <div id="album-select-view" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12"></div>
+            <div id="album-select-view" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-12"></div>
             
             <div id="grid-spread-view" class="hidden animate-in fade-in slide-in-from-bottom-8 duration-700">
-                <div class="text-center mb-12">
-                    <h2 id="spread-title" class="font-dancing text-5xl md:text-6xl text-primary mb-4 uppercase tracking-widest"></h2>
-                    <div class="h-1 w-12 bg-primary/20 mx-auto rounded-full"></div>
+                <div class="flex justify-between items-center mb-8">
+                    <button onclick="closeFolder()" class="text-[10px] md:text-xs font-black uppercase tracking-widest text-primary hover:underline">← Close Notebook</button>
+                    <h2 id="spread-title" class="font-dancing text-2xl md:text-4xl text-primary text-center"></h2>
+                    <div class="w-10 md:w-20"></div>
                 </div>
-                <div id="photo-grid"></div>
+
+                <div class="notebook-container">
+                    <div id="photo-grid" class="notebook-page-grid"></div>
+                    
+                    <div class="flex justify-center items-center gap-4 md:gap-8 mt-12 pt-8 border-t border-gray-100">
+                        <button id="prev-page" class="page-btn" onclick="changePage(-1)">Prev</button>
+                        <span id="page-num" class="font-bold text-dark/40 text-xs md:text-sm">Page 1</span>
+                        <button id="next-page" class="page-btn" onclick="changePage(1)">Next</button>
+                    </div>
+                </div>
             </div>
         </div>
-        <div id="videos-tab" class="tab-content hidden animate-in fade-in duration-700">
-            <div id="main-video-grid"></div>
+
+        <div id="videos-tab" class="tab-content hidden">
+            <div id="main-video-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
         </div>
     </main>
 
-    <button id="music-trigger" onclick="toggleMusic()" class="fixed bottom-8 left-8 w-16 h-16 bg-white shadow-2xl border border-gray-100 rounded-full flex items-center justify-center text-xl z-[2000] hover:scale-110 active:scale-95 transition-all">🎵</button>
+    <button id="music-trigger" onclick="toggleMusic()" class="fixed bottom-8 left-8 w-14 h-14 bg-white shadow-2xl border border-gray-100 rounded-full flex items-center justify-center text-xl z-[2000] hover:scale-110 active:scale-95 transition-all">🎵</button>
     <audio id="bg-music" loop><source src="/MUSIC/[선재 업고 튀어 (Lovely Runner) OST Part 8] 10CM - 봄눈 (Spring Snow) MV.mp3" type="audio/mpeg"></audio>
 
-    <div id="lightbox" onclick="closeLightbox()" class="fixed inset-0 bg-black/60 backdrop-blur-xl hidden items-center justify-center z-[10000] p-4">
-        <div class="polaroid-frame relative max-w-[400px] w-full shadow-2xl animate-in zoom-in-95 duration-500" onclick="event.stopPropagation()" id="lightbox-card">
-            <div id="lightbox-media" class="rounded-sm">
-                </div>
+    <div id="lightbox" onclick="closeLightbox()" class="fixed inset-0 bg-black/80 backdrop-blur-xl hidden items-center justify-center z-[10000] p-4">
+        <div class="polaroid-frame relative max-w-[400px] w-full shadow-2xl" onclick="event.stopPropagation()">
+            <div id="lightbox-media"></div>
             <div class="flex justify-between items-center mt-6 px-2">
-                <button onclick="closeLightbox()" class="text-gray-400 hover:text-primary font-bold text-[10px] md:text-xs uppercase tracking-widest transition-colors">Close</button>
+                <button onclick="closeLightbox()" class="text-gray-400 hover:text-primary font-bold text-[10px] uppercase tracking-widest transition-colors">Close</button>
                 <div id="download-anchor"></div>
             </div>
         </div>
     </div>
 
     <script>
-        const config = { counts: { us: 190, foods: 5, wfriends: 25, yours: 337, videos: 28 }, folders: [{ id: 'us', name: 'Us' }, { id: 'foods', name: 'Foods' }, { id: 'yours', name: 'Fav Photo of You' }, { id: 'wfriends', name: 'W/ Friends' }] };
+        const config = { 
+            counts: { us: 190, foods: 5, wfriends: 25, yours: 337, videos: 28 }, 
+            folders: [
+                { id: 'us', name: 'Us' }, 
+                { id: 'foods', name: 'Foods' }, 
+                { id: 'yours', name: 'Fav Photo of You' }, 
+                { id: 'wfriends', name: 'W/ Friends' }
+            ] 
+        };
+
+        let currentFolder = '';
+        let currentPage = 1;
         const music = document.getElementById('bg-music');
         let isMusicPlayingBeforeVideo = false;
 
-        window.addEventListener('scroll', () => { document.getElementById("scroll-progress").style.width = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100 + "%"; });
-
-        function createHeart() {
-            const h = document.createElement('div'); h.className = 'heart'; h.innerHTML = ['❤️', '💖', '🌸', '✨'][Math.floor(Math.random() * 4)];
-            h.style.left = Math.random() * 100 + "vw"; h.style.animationDuration = (Math.random() * 5 + 5) + "s";
-            document.body.appendChild(h); setTimeout(() => h.remove(), 10000);
-        }
-        setInterval(createHeart, 500);
-
-        window.addEventListener('click', () => { if (music.paused && !music.dataset.manualPause) { music.play().then(() => { music.dataset.isPlaying = "true"; }).catch(e => {}); } }, { once: true });
-
         function initAlbumView() {
-            document.getElementById('album-select-view').classList.remove('hidden'); document.getElementById('grid-spread-view').classList.add('hidden'); document.getElementById('back-btn').classList.add('hidden');
+            document.getElementById('album-select-view').classList.remove('hidden');
+            document.getElementById('grid-spread-view').classList.add('hidden');
             document.getElementById('album-select-view').innerHTML = config.folders.map(f => `
-                <div class="folder-container group cursor-pointer text-center" onclick="openFolder('${f.id}')">
-                    <div class="album-stack-container mb-8 w-[200px] h-[240px] relative mx-auto">
-                        <div class="polaroid-stack absolute inset-0 polaroid-frame rotate-[-4deg] z-20 group-hover:rotate-0 transition-transform duration-300"><img src="/${f.id.toUpperCase()}/1.jpg" class="w-full h-full object-cover rounded-sm"></div>
-                        <div class="polaroid-stack absolute inset-0 polaroid-frame rotate-[4deg] z-10 group-hover:rotate-0 transition-transform duration-300"><img src="/${f.id.toUpperCase()}/2.jpg" class="w-full h-full object-cover rounded-sm"></div>
-                    </div><h2 class="font-dancing text-3xl text-gray-800 group-hover:text-primary transition-colors">${f.name}</h2>
+                <div class="group cursor-pointer text-center" onclick="openFolder('${f.id}')">
+                    <div class="relative w-full max-w-[220px] aspect-[3/4] mx-auto mb-4 bg-white p-2 md:p-3 shadow-xl border border-gray-200 transform group-hover:-rotate-2 transition-all duration-300">
+                        <img src="/${f.id.toUpperCase()}/1.jpg" class="w-full h-full object-cover">
+                    </div>
+                    <h2 class="font-dancing text-xl md:text-3xl text-gray-800 group-hover:text-primary transition-colors">${f.name}</h2>
+                    <p class="text-[8px] md:text-[10px] uppercase tracking-widest text-gray-400 mt-1">${config.counts[f.id]} Memories</p>
                 </div>`).join('');
         }
 
         function openFolder(id) {
-            document.getElementById('album-select-view').classList.add('hidden'); document.getElementById('grid-spread-view').classList.remove('hidden'); document.getElementById('back-btn').classList.replace('hidden', 'flex');
-            const grid = document.getElementById('photo-grid'); document.getElementById('spread-title').innerText = id;
-            grid.className = "grid grid-cols-3 gap-2 md:gap-8 max-w-6xl mx-auto";
-            const prefix = id === 'wfriends' ? 'WFRIENDS' : id.toUpperCase();
+            currentFolder = id;
+            currentPage = 1;
+            document.getElementById('album-select-view').classList.add('hidden');
+            document.getElementById('grid-spread-view').classList.remove('hidden');
+            document.getElementById('spread-title').innerText = config.folders.find(f => f.id === id).name;
+            renderNotebookPage();
+        }
+
+        function renderNotebookPage() {
+            if (!currentFolder) return;
+            const grid = document.getElementById('photo-grid');
+            
+            // Dynamic pageSize calculation
+            const dynamicPageSize = window.innerWidth <= 640 ? 6 : 9;
+            
+            const total = config.counts[currentFolder];
+            const start = (currentPage - 1) * dynamicPageSize + 1;
+            const end = Math.min(currentPage * dynamicPageSize, total);
+            const prefix = currentFolder === 'wfriends' ? 'WFRIENDS' : currentFolder.toUpperCase();
+            
             let html = '';
-            for(let i = 1; i <= config.counts[id]; i++) { html += `<div class="polaroid-frame cursor-zoom-in" style="padding: 4px 4px 12px 4px;" onclick="openLightbox('/${prefix}/${i}.jpg')"><img src="/${prefix}/${i}.jpg" loading="lazy" class="polaroid-content"></div>`; }
-            grid.innerHTML = html; window.scrollTo({ top: 0, behavior: 'smooth' });
+            for(let i = start; i <= end; i++) {
+                const rotation = (Math.random() * 4 - 2).toFixed(1);
+                html += `
+                    <div class="polaroid-frame" style="transform: rotate(${rotation}deg)" onclick="openLightbox('/${prefix}/${i}.jpg')">
+                        <img src="/${prefix}/${i}.jpg" loading="lazy" class="polaroid-content">
+                    </div>`;
+            }
+            
+            grid.innerHTML = html;
+            document.getElementById('page-num').innerText = `Page ${currentPage} of ${Math.ceil(total / dynamicPageSize)}`;
+            document.getElementById('prev-page').disabled = currentPage === 1;
+            document.getElementById('next-page').disabled = end >= total;
+        }
+
+        window.addEventListener('resize', () => {
+            if (currentFolder) renderNotebookPage();
+        });
+
+        function changePage(step) {
+            currentPage += step;
+            renderNotebookPage();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function closeFolder() {
+            currentFolder = '';
+            initAlbumView();
         }
 
         function switchTab(name) {
@@ -175,34 +258,37 @@
         }
 
         function loadVideos() {
-            const grid = document.getElementById('main-video-grid'); grid.className = "grid grid-cols-3 gap-2 md:gap-8 max-w-6xl mx-auto";
-            grid.innerHTML = Array.from({ length: config.counts.videos }, (_, i) => `<div class="polaroid-frame cursor-pointer" style="padding: 4px 4px 12px 4px;" onclick="openLightbox('/VIDEOS/${i+1}.mp4')"><video src="/VIDEOS/${i+1}.mp4" muted loop autoplay playsinline class="polaroid-content"></video></div>`).join('');
+            const grid = document.getElementById('main-video-grid');
+            grid.innerHTML = Array.from({ length: config.counts.videos }, (_, i) => `
+                <div class="polaroid-frame" onclick="openLightbox('/VIDEOS/${i+1}.mp4')">
+                    <video src="/VIDEOS/${i+1}.mp4" muted loop autoplay playsinline class="polaroid-content"></video>
+                </div>`).join('');
         }
 
         function openLightbox(src) {
             document.getElementById('lightbox').classList.replace('hidden', 'flex');
             const mediaBox = document.getElementById('lightbox-media');
-            
-            if (src.toLowerCase().endsWith('.mp4')) { 
-                isMusicPlayingBeforeVideo = !music.paused; 
-                music.pause(); 
-                mediaBox.innerHTML = `<video src="${src}" controls autoplay loop class="w-full h-full"></video>`; 
-            } else { 
-                mediaBox.innerHTML = `<img src="${src}" class="w-full h-full">`; 
+            if (src.endsWith('.mp4')) {
+                isMusicPlayingBeforeVideo = !music.paused; music.pause();
+                mediaBox.innerHTML = `<video src="${src}" controls autoplay loop class="w-full h-full"></video>`;
+            } else {
+                mediaBox.innerHTML = `<img src="${src}" class="w-full h-full">`;
             }
-            document.getElementById('download-anchor').innerHTML = `<a href="${src}" download="${src.split('/').pop()}" class="bg-gray-900 text-white px-3 py-1.5 md:px-4 md:py-2 rounded-lg text-[9px] md:text-xs font-bold hover:bg-primary transition-all">Download</a>`;
+            document.getElementById('download-anchor').innerHTML = `<a href="${src}" download class="bg-gray-900 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-primary">Download</a>`;
         }
 
-        function closeLightbox() { document.getElementById('lightbox').classList.replace('flex', 'hidden'); document.getElementById('lightbox-media').innerHTML = ''; if (isMusicPlayingBeforeVideo) music.play(); }
-        function toggleMusic() { if (music.paused) { music.play(); music.dataset.manualPause = ""; } else { music.pause(); music.dataset.manualPause = "true"; } }
-        function closeFolder() { initAlbumView(); }
+        function closeLightbox() { document.getElementById('lightbox').classList.replace('flex', 'hidden'); if (isMusicPlayingBeforeVideo) music.play(); }
+        function toggleMusic() { music.paused ? music.play() : music.pause(); }
+
+        setInterval(() => {
+            const h = document.createElement('div'); h.className = 'heart'; h.innerHTML = ['❤️', '💖', '🌸', '✨'][Math.floor(Math.random() * 4)];
+            h.style.left = Math.random() * 100 + "vw"; h.style.animationDuration = (Math.random() * 5 + 5) + "s";
+            document.body.appendChild(h); setTimeout(() => h.remove(), 10000);
+        }, 500);
 
         window.onload = () => {
             initAlbumView();
-            setTimeout(() => { 
-                const finalText = document.getElementById('final-text');
-                if(finalText) finalText.classList.replace('opacity-0', 'opacity-100'); 
-            }, 5500);
+            setTimeout(() => document.getElementById('final-text').classList.replace('opacity-0', 'opacity-100'), 5500);
         };
     </script>
 </body>

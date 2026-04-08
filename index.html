@@ -148,6 +148,39 @@
             .modal-card.fan-active .deck-photo:nth-child(4) { transform: translate(30px, 5px) rotate(6deg) scale(0.95); }
             .modal-card.fan-active .deck-photo:nth-child(5) { transform: translate(60px, -8px) rotate(12deg) scale(0.9); }
         }
+
+        /* Notebook View for many photos */
+        .notebook-view {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            padding: 20px;
+            background: #fffdf9;
+            border-left: 20px solid #eee; /* Parang spiral or binding ng notebook */
+            box-shadow: inset 5px 0 10px rgba(0,0,0,0.05);
+            border-radius: 4px;
+        }
+
+        /* Overlay para sa Stack */
+        .stack-overlay {
+            position: absolute;
+            inset: 0;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-radius: 2px;
+            cursor: pointer;
+            z-index: 100;
+            backdrop-filter: blur(2px);
+            transition: background 0.3s ease;
+        }
+
+        @media (max-width: 640px) {
+            .notebook-view { grid-template-columns: 1fr; } /* Single column sa mobile */
+        }
     </style>
     <script>
         tailwind.config = {
@@ -286,7 +319,7 @@
                 </div>
             </div> 
 
-            <div class="timeline-card" onclick="openStory('today')">
+            <div class="timeline-card" onclick="openStory('april')">
                 <div class="timeline-dot"></div>
                 <h3 class="font-bold text-primary text-2xl text-primary">APRIL 2026</h3>
                 <div class="timeline-content-box ring-2 ring-primary/20">
@@ -363,7 +396,7 @@
             'september': {
                 date: "SEPTEMBER 2025",
                 subtitle: "The Courting",
-                imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg"],
+                imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg"],
                 text: `<p>From our first shared meals to realizing we shared the same soul. Those nights made me love you more.</p>
                        <p>It wasn't just about courting; it was about discovering the person I want to be with forever.</p>`
             },
@@ -425,38 +458,72 @@
 
         function openStory(key) {
     const data = storyData[key];
+    const modalContent = document.getElementById('modal-content');
     document.getElementById('modal-date').innerText = data.date;
     document.getElementById('modal-subtitle').innerText = data.subtitle;
-    
-    // 1. Check kung may laman ang images
+
     let photoDeckHtml = '';
+    
     if (data.imgs && data.imgs.length > 0) {
-        const count = data.imgs.length;
-        photoDeckHtml = `<div class="photo-deck">
-            ${data.imgs.map((url, i) => {
-                const offset = (i - (count - 1) / 2) * 60; 
-                const rotation = (i - (count - 1) / 2) * 8;
-                return `<div class="deck-photo" style="z-index: ${i}; transform: translate(${offset}px, 0px) rotate(${rotation}deg); opacity: 1;">
-                            <img src="${url}" alt="Memory">
-                        </div>`;
-            }).join('')}
-        </div>`;
+        if (data.imgs.length <= 5) {
+            // STANDARD VIEW (1-5 cards centered)
+            const count = data.imgs.length;
+            photoDeckHtml = `<div class="photo-deck">
+                ${data.imgs.map((url, i) => {
+                    const offset = (i - (count - 1) / 2) * 60;
+                    const rotation = (i - (count - 1) / 2) * 8;
+                    return `<div class="deck-photo" style="z-index: ${i}; transform: translate(${offset}px, 0px) rotate(${rotation}deg); opacity: 1;">
+                                <img src="${url}" alt="Memory">
+                            </div>`;
+                }).join('')}
+            </div>`;
+        } else {
+            // COMPRESSED STACK VIEW (Higit sa 5 photos)
+            // Ipapakita lang natin ang unang 5 bilang preview stack
+            photoDeckHtml = `<div class="photo-deck" onclick="openNotebook('${key}')" style="cursor:pointer;">
+                ${data.imgs.slice(0, 5).map((url, i) => {
+                    const offset = (i - 2) * 15; // Tighter stack
+                    const rotation = (i - 2) * 5;
+                    return `<div class="deck-photo" style="z-index: ${i}; transform: translate(${offset}px, 0px) rotate(${rotation}deg); opacity: 1;">
+                                <img src="${url}" alt="Memory">
+                                ${i === 4 ? `<div class="stack-overlay">+${data.imgs.length - 4} More</div>` : ''}
+                            </div>`;
+                }).join('')}
+            </div>
+            <p class="text-center text-xs text-primary font-bold mb-4 uppercase tracking-widest">Tap the stack to open notebook 📖</p>`;
+        }
     }
 
-    // 2. Inject content (Kung walang image, text lang ang lilitaw at aangat ito)
-    document.getElementById('modal-content').innerHTML = photoDeckHtml + data.text;
-    
-    const modal = document.getElementById('story-modal');
-    modal.style.display = 'flex';
+    modalContent.innerHTML = photoDeckHtml + data.text;
+    document.getElementById('story-modal').style.display = 'flex';
     
     setTimeout(() => { 
-        modal.classList.add('active'); 
-        // Trigger fan animation lang kung may images
-        if (data.imgs.length > 0) {
-            document.getElementById('modal-card').parentElement.classList.add('fan-active'); 
-        }
+        document.getElementById('modal-card').classList.add('active'); 
+        if (data.imgs.length > 0) document.getElementById('modal-card').parentElement.classList.add('fan-active'); 
     }, 10);
     document.body.style.overflow = 'hidden';
+}
+
+// Bagong function para sa Notebook View
+function openNotebook(key) {
+    const data = storyData[key];
+    const modalContent = document.getElementById('modal-content');
+
+    const notebookHtml = `
+        <button onclick="openStory('${key}')" class="mb-4 text-xs font-bold text-primary hover:underline">← BACK TO STORY</button>
+        <div class="notebook-view">
+            ${data.imgs.map(url => `
+                <div class="polaroid-frame" style="transform: rotate(${Math.random() * 4 - 2}deg);">
+                    <img src="${url}" class="w-full h-auto rounded-sm shadow-sm" style="aspect-ratio: 1/1; object-fit: cover;">
+                </div>
+            `).join('')}
+        </div>
+        <div class="mt-8">${data.text}</div>
+    `;
+
+    modalContent.innerHTML = notebookHtml;
+    // Scroll to top of modal
+    document.getElementById('modal-card').scrollTop = 0;
 }
 
         function closeStory() {
