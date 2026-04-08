@@ -207,7 +207,6 @@
             .left-page { flex: 0 0 38%; padding: 15px; border-right: none; border-bottom: 2px dashed var(--secondary); }
             .right-page { flex: 1 1 0; padding: 15px; display: flex; flex-direction: column; }
 
-            /* MOBILE GRIDS (PROTECTED FROM DESKTOP) */
             .inner-photo-grid.mobile-fit { display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: center; align-items: center; gap: 8px; width: 100%; height: 100%; padding-bottom: 5px; }
             .inner-photo-grid.mobile-fit .polaroid-mini { flex: 0 1 25%; min-width: 0; max-width: none; width: auto; }
             
@@ -219,7 +218,6 @@
             #pagination-controls { padding-top: 10px; }
             #modal-date { font-size: 2rem; margin-bottom: 0; }
             
-            /* Text indent adjustment for mobile */
             #text-area p { text-indent: 1.5rem; margin-bottom: 1rem; }
         }
 
@@ -232,8 +230,11 @@
             .inner-photo-grid::-webkit-scrollbar { display: none; }
             .polaroid-mini { flex: 0 0 65%; scroll-snap-align: center; transform: none !important; }
             .right-page { padding: 30px 20px; height: auto; }
-            .page-content-wrapper { height: auto; min-height: 200px; max-height: none; }
-            #pagination-controls { padding-top: 20px; }
+            
+            /* FIXED MOBILE TEXT OVERFLOW - Now forces pagination */
+            .page-content-wrapper { height: 250px; min-height: 250px; max-height: 250px; overflow: hidden; position: relative; }
+            
+            #pagination-controls { padding-top: 15px; }
         }
 
         /* --- LIGHTBOX & UTILS --- */
@@ -242,6 +243,10 @@
         .heart { position: fixed; bottom: -10%; user-select: none; pointer-events: none; z-index: 5; animation: float linear forwards; }
         @keyframes float { 0% { transform: translateY(0px) rotate(0deg); opacity: 0; } 50% { opacity: 0.8; } 100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }
         #music-toggle { position: fixed; bottom: 25px; right: 25px; z-index: 1001; background: white; border: 1px solid var(--secondary); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 20px rgba(255, 77, 109, 0.2); }
+
+        .x-btn {
+            margin-right: 20px;
+        }
     </style>
 </head>
 <body class="overflow-x-hidden antialiased">
@@ -291,13 +296,13 @@
             <div class="book-binding"></div>
             
             <div class="book-page left-page" id="left-page">
+                <button onclick="closeStory()" class="x-btn absolute top-4 right-6 text-primary/40 hover:text-primary transition-colors text-2xl z-50">✕</button>
                 <h3 id="modal-date" class="font-dancing text-3xl md:text-5xl text-primary mb-1 text-center"></h3>
                 <p id="modal-subtitle" class="text-[9px] font-bold tracking-[0.3em] uppercase text-dark/40 mb-4 text-center"></p>
                 <div id="photo-area" class="inner-photo-grid"></div>
             </div>
 
             <div class="book-page right-page" id="right-page">
-                <button onclick="closeStory()" class="absolute top-4 right-6 text-primary/40 hover:text-primary transition-colors text-2xl z-50">✕</button>
                 <div class="page-content-wrapper" id="text-wrapper">
                     <div id="text-area" class="mt-4 prose prose-pink leading-relaxed italic text-dark/80"></div>
                 </div>
@@ -315,19 +320,19 @@
             'july': {
                 date: "JULY 2025", sub: "The Risk", brief: "The Month When You Made Your First Move HAHAHAHAHA",
                 imgs: ["/TIMELINE/1.jpg", "/TIMELINE/2.jpg"],
-                text: `<p>July will always be the month of my greatest risk in love. Even now, I wonder what would have happened if you didn't like my note back then. What would we be now if I hadn't reached out? <p/>
-                <p>Kung bibigyan pa nga ako ng paulit ulit na chance kung irereach out kita sa time na to? Palagi kong gagawin without and hesitations, doubt, and second thought. <p/>
-                <p>I still remember the time you accepted my follew request and follow me back in just a couple of minutes, hindi sa pagmamayabang pero nakaramdam agad ako ng pag asa nung time na yun HAHAHAHAH though wala akong balak ipursue ka if di ka nagbibigay ng sign, pero ayun nga hanggang sa ilike mo yung notes ko HAHAHAHAHA I felt like I'm one of the luckiest kumag when you replied to my confession and gives me the answer "Hope to know you rin". dun palang feeling ko gusto mo na ako eh, HAHAHAHAHAHA eme
-                <p>Again thank you for accepting me and giving me a chance to prove myself, I'll always be thankful ay Lord, for letting me see your name sa instagram<p/>`
+                text: `<p>July will always be the month of my greatest risk in love. Even now, I wonder what would have happened if you didn't like my note back then. What would we be now if I hadn't reached out?</p>
+                <p>Kung bibigyan pa nga ako ng paulit ulit na chance kung irereach out kita sa time na to? Palagi kong gagawin without any hesitations, doubt, and second thought.</p>
+                <p>I still remember the time you accepted my follow request and follow me back in just a couple of minutes, hindi sa pagmamayabang pero nakaramdam agad ako ng pag asa nung time na yun HAHAHAHAH though wala akong balak ipursue ka if di ka nagbibigay ng sign, pero ayun nga hanggang sa ilike mo yung notes ko HAHAHAHAHA I felt like I'm one of the luckiest kumag when you replied to my confession and gives me the answer "Hope to know you rin". dun palang feeling ko gusto mo na ako eh, HAHAHAHAHAHA eme.</p>
+                <p>Again thank you for accepting me and giving me a chance to prove myself, I'll always be thankful ay Lord, for letting me see your name sa instagram.</p>`
             },
             'august': { 
                 date: "AUGUST 2025", sub: "First Meet", brief: "The Month I Started To Court You Silently...", 
                 imgs: [], 
                 text: `<p>This is the month when we met for the first time. Actually, August is one of my favorite months with you.</p>
-                <p>"August 29, 2025". This was the day when I finally had the courage to invite you to eat out, And you said "Yes", Believe it or not, super butterflies in my stomach talaga ako nung time na 'yan. Sobrang excited ko kasi first time nating magkaharap nang matagal. Usually kasi sa school, malayo ka or busy makipag-usap, kaya sobrang saya ko nung nag-yes ka. Kahit saglit lang tayo nun, okay na ako—alam ko naman kasing mahirap sumakay pauwi sa inyo at mahaba ang pila.<P/>
-                <P>Nung nasa Mixue tayo, honestly, natitig talaga ako sa eyes and smile mo. If napansin mong nakatitig ako, 'yun talaga ang reason. I’m just so glad na our first meet went really well. Ang galing din kasi end na ng August nun, so bago pa mag-birth month ko, nakapag-date na tayo in person."<p/>
-                <p>This was the moment na sinabi ko sa sarili ko "I'm gonna pursue her, No matter what"<p/><bt>
-                <p>PS. WE DON'T HAVE PICTURES THAT TIME KASI DI PA TAYO GANUN KA CLOSE HAHAHAHA<p/>` 
+                <p>"August 29, 2025". This was the day when I finally had the courage to invite you to eat out, And you said "Yes", Believe it or not, super butterflies in my stomach talaga ako nung time na 'yan. Sobrang excited ko kasi first time nating magkaharap nang matagal. Usually kasi sa school, malayo ka or busy makipag-usap, kaya sobrang saya ko nung nag-yes ka. Kahit saglit lang tayo nun, okay na ako—alam ko naman kasing mahirap sumakay pauwi sa inyo at mahaba ang pila.</p>
+                <p>Nung nasa Mixue tayo, honestly, natitig talaga ako sa eyes and smile mo. If napansin mong nakatitig ako, 'yun talaga ang reason. I’m just so glad na our first meet went really well. Ang galing din kasi end na ng August nun, so bago pa mag-birth month ko, nakapag-date na tayo in person."</p>
+                <p>This was the moment na sinabi ko sa sarili ko "I'm gonna pursue her, No matter what"</p>
+                <p>PS. WE DON'T HAVE PICTURES THAT TIME KASI DI PA TAYO GANUN KA CLOSE HAHAHAHA</p>` 
             },
             'september': { 
                 date: "SEPTEMBER 2025", sub: "Psalm to Binibini", brief: "First Date and First Meal Together", 
@@ -405,7 +410,8 @@
             
             controls.innerHTML = '';
             
-            if (window.innerWidth > 640 && textArea.scrollHeight > wrapper.offsetHeight) {
+            // Check for pagination on BOTH Desktop and Mobile
+            if (textArea.scrollHeight > wrapper.offsetHeight) {
                 if (currentPage < Math.ceil(textArea.scrollHeight / wrapper.offsetHeight) - 1) {
                     controls.innerHTML += `<button class="page-nav-btn" onclick="changePage(1)">Turn Page →</button>`;
                 }

@@ -2,24 +2,72 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Catch My Heart | The Surprise</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ff4d6d',
+                        secondary: '#ffccd5',
+                        accent: '#fff0f3',
+                        paper: '#fffef2',
+                        wood: '#5d4037',
+                        dark: '#4a3a3a'
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        body { font-family: 'Quicksand', sans-serif; background-color: #fdfaf8; color: #4a3a3a; }
+        :root {
+            --primary: #ff4d6d;
+            --secondary: #ffccd5;
+            --accent: #fff0f3;
+            --paper: #fffef2;
+            --wood: #5d4037;
+        }
+
+        body { 
+            font-family: 'Quicksand', sans-serif; 
+            background: #fdfaf8; 
+            color: var(--dark); 
+            overflow-x: hidden; 
+            width: 100%; 
+        }
+
         .font-dancing { font-family: 'Dancing Script', cursive; }
         .font-signature { font-family: 'Great Vibes', cursive; text-transform: none; }
 
-        /* 1. Subtle Grain Overlay */
+        /* --- LOGO ANIMATION --- */
+        .logo-box { 
+            width: 200px; 
+            margin-top: -15px; 
+            transition: width 0.3s ease; 
+            flex-shrink: 0; 
+        }
+        .drawing-path { 
+            stroke-dasharray: 1000; 
+            stroke-dashoffset: 1000; 
+            animation: drawLine 6s ease-out forwards; 
+            filter: drop-shadow(0 0 4px rgba(255, 77, 109, 0.2)); 
+        }
+        @keyframes drawLine { to { stroke-dashoffset: 0; } }
+
+        /* --- EFFECTS --- */
         .grain-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://grainy-gradients.vercel.app/noise.svg');
             opacity: 0.03; pointer-events: none; z-index: 40;
         }
 
-        /* 2. Floating Elements Animation */
         @keyframes float {
             0% { transform: translateY(0px) rotate(0deg); opacity: 0; }
             50% { opacity: 0.8; }
@@ -30,15 +78,7 @@
             pointer-events: none; z-index: 5; animation: float linear forwards;
         }
 
-        /* 3. Logo Drawing Animation */
-        .drawing-path {
-            stroke-dasharray: 1000; stroke-dashoffset: 1000;
-            animation: drawLine 6s ease-out forwards;
-            filter: drop-shadow(0 0 4px rgba(255, 77, 109, 0.2));
-        }
-        @keyframes drawLine { to { stroke-dashoffset: 0; } }
-
-        /* 4. Game Custom Styles */
+        /* --- GAME CUSTOM STYLES --- */
         @keyframes cheerBounce {
             from { transform: translateY(0) scale(1); }
             to { transform: translateY(-15px) scale(1.1); }
@@ -47,49 +87,51 @@
         
         .polaroid-card {
             background: #ffffff;
-            padding: 20px;
+            padding: 30px 20px;
             box-shadow: 0 10px 30px rgba(255, 77, 109, 0.1);
             border: 1px solid rgba(0,0,0,0.02);
-            border-radius: 4px;
+            border-radius: 8px;
         }
 
         #game-boundary {
-            background: #fff;
-            border: 2px solid #ffccd5;
+            background: #ffffff;
+            border: 2px dashed var(--secondary);
             box-shadow: inset 0 0 20px rgba(255, 77, 109, 0.05);
+            border-radius: 20px;
         }
 
-        /* 5. Nav Scaling (Same as Gallery) */
-        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; width: 100%; height: 100%; }
-       .logo-box { width: 160px; transition: width 0.3s ease; flex-shrink: 0; }
+        /* --- NAVBAR & UI UTILS --- */
+        .nav-wrapper { 
+            display: flex; justify-content: space-between; align-items: center; 
+            width: 100%; height: 100%; 
+        }
+        #music-toggle { 
+            position: fixed; bottom: 25px; right: 25px; z-index: 1001; 
+            background: white; border: 1px solid var(--secondary); width: 45px; height: 45px; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; box-shadow: 0 10px 20px rgba(255, 77, 109, 0.2); 
+        }
+
         @media (max-width: 768px) {
-            .logo-box { width: 160px; margin-top: -10px;}
-            .nav-link-item { font-size: 12px !important; padding: 0 -2px !important; }
-            .btn-surprise { padding: 6px 10px !important; font-size: 12px !important; margin-left: -10px !important; }
+            .logo-box { width: 140px; margin-top: -10px; }
+            .polaroid-card { padding: 20px 15px; }
+            #game-boundary { height: 350px !important; }
         }
-
-        @media (max-width: 380px) {
-            .logo-box { width: 85px; }
-            .nav-link-item { font-size: 13px !important; padding: 0 5px !important; }
-        }
-
     </style>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: { primary: '#ff4d6d', secondary: '#ffccd5', accent: '#fff0f3', dark: '#4a3a3a' }
-                }
-            }
-        }
-    </script>
 </head>
 <body class="overflow-x-hidden antialiased">
 
     <div class="grain-overlay"></div>
     <div id="heart-bg" class="fixed inset-0 pointer-events-none z-0"></div>
 
-    <nav class="sticky top-0 bg-white/70 backdrop-blur-xl border-b border-gray-100 z-[1000] shadow-sm">
+    <audio id="bg-music" loop>
+        <source src="/MUSIC/[선재 업고 튀어 (Lovely Runner) OST Part 8] 10CM - 봄눈 (Spring Snow) MV.mp3" type="audio/mpeg">
+    </audio>
+    <div id="music-toggle" onclick="toggleMusic()">
+        <span id="music-icon">🎵</span>
+    </div>
+
+    <nav class="sticky top-0 bg-white/80 backdrop-blur-xl border-b border-gray-100 z-[1000] shadow-sm">
         <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 nav-wrapper">
             <div class="logo-box">
                 <svg viewBox="0 0 180 60" class="font-signature w-full h-full">
@@ -97,66 +139,76 @@
                     <text id="final-text" x="0" y="45" fill="#ff4d6d" class="opacity-0 transition-opacity duration-1000 text-3xl">Our Story</text>
                 </svg>
             </div>
-        <div class="flex items-center gap-6 md:gap-8">
-            <a href="../index.html" class="nav-link-item font-medium text-gray-600 hover:text-primary transition-colors">Timeline</a>
             
-            <div class="relative group">
-            <button class="nav-link-item font-medium hover:text-primary py-2">Albums ▾</button>
-            <div class="absolute left-1/2 -translate-x-1/2 hidden group-hover:block bg-white shadow-xl rounded-xl p-2 min-w-[160px] animate-in fade-in slide-in-from-top-2">
-                <button onclick="switchTab('photos')" class="w-full text-left px-4 py-2 hover:bg-secondary rounded-lg transition-colors">📸 Photos</button>
-                <button onclick="switchTab('videos')" class="w-full text-left px-4 py-2 hover:bg-secondary rounded-lg transition-colors">🎥 Videos</button>
+            <div class="flex items-center gap-3 md:gap-8">
+                <a href="../index.html" class="font-bold text-gray-400 border-b-2 border-transparent hover:text-primary hover:border-primary transition-all uppercase text-[9px] md:text-xs tracking-widest py-2">Timeline</a>
+                <button onclick="window.location.href='/HTML/gallery.html?tab=photos'" class="font-bold text-gray-400 border-b-2 border-transparent hover:text-primary hover:border-primary transition-all uppercase text-[9px] md:text-xs tracking-widest py-2">Albums</button>
+                <button onclick="window.location.href='/HTML/gallery.html?tab=videos'" class="font-bold text-gray-400 border-b-2 border-transparent hover:text-primary hover:border-primary transition-all uppercase text-[9px] md:text-xs tracking-widest py-2">Videos</button>
+                
+                <a href="/HTML/game.html" class="font-bold text-primary border-b-2 border-primary uppercase text-[9px] md:text-xs tracking-widest py-2 transition-all">Surprise</a>
             </div>
         </div>
+    </nav>
 
-            <a href="/HTML/game.html" class="btn-surprise bg-primary/10 text-primary px-5 py-2 rounded-full text-sm font-bold hover:bg-primary hover:text-white transition-all shadow-sm">
-                The Surprise
-            </a>
-        </div>
-
-    </div>
-</nav>
-
-    <main class="max-w-7xl mx-auto px-4 py-16 relative z-10 text-center">
-        <h2 id="game-title" class="font-dancing text-6xl text-primary mb-2">The Challenge</h2>
-        <div id="status-message" class="font-bold text-dark/40 mb-10 h-10 text-lg italic tracking-wide">
+    <main class="max-w-7xl mx-auto px-4 py-12 md:py-16 relative z-10 text-center">
+        <h2 id="game-title" class="font-dancing text-5xl md:text-6xl text-primary mb-2">The Challenge</h2>
+        <div id="status-message" class="font-bold text-dark/50 mb-10 h-10 text-sm md:text-lg italic tracking-wide transition-all">
             Prove your love. Answer the questions first. 🤨
         </div>
 
         <div id="quiz-section" class="polaroid-card max-w-lg mx-auto">
-            <p id="question-text" class="font-bold text-xl mb-8 text-dark"></p>
-            <div id="answer-buttons" class="space-y-4"></div>
+            <p id="question-text" class="font-bold text-lg md:text-xl mb-8 text-dark"></p>
+            <div id="answer-buttons" class="space-y-3"></div>
         </div>
 
         <div id="game-content" class="hidden">
             <div id="cheer-squad" class="flex justify-center gap-5 h-16 mb-6"></div>
-            <div id="game-boundary" class="relative h-[400px] w-full max-w-xl mx-auto rounded-[20px] overflow-hidden">
-                <div id="s1" class="absolute top-[20%] left-[15%] text-3xl cursor-pointer opacity-10 hover:opacity-100 transition-all duration-300" onclick="findReward(this, 'You make my world brighter! ✨')">🌸</div>
-                <div id="s2" class="absolute bottom-[25%] right-[20%] text-3xl cursor-pointer opacity-10 hover:opacity-100 transition-all duration-300" onclick="findReward(this, 'I am the luckiest to have you. ❤️')">🍯</div>
+            <div id="game-boundary" class="relative h-[400px] w-full max-w-xl mx-auto overflow-hidden">
+                <div id="s1" class="absolute top-[20%] left-[15%] text-3xl cursor-pointer opacity-10 hover:opacity-100 transition-all duration-300" onclick="findReward(this, 'I Have This Bracelet For You')">📿</div>
+                <div id="s2" class="absolute bottom-[25%] right-[20%] text-3xl cursor-pointer opacity-10 hover:opacity-100 transition-all duration-300" onclick="findReward(this, 'I Have This Make Up Bag For you')">👝</div>
             </div>
         </div>
 
         <div id="prize-reveal" class="hidden animate-in fade-in slide-in-from-bottom-8 duration-700 py-10">
-            <h2 class="font-dancing text-7xl text-primary mb-4">Mission Accomplished! 🎉</h2>
-            <p class="text-xl mb-10 text-dark/60">Kahit na hiningal, nahuli mo pa rin. Ready for the real surprise?</p>
-            <a href="letter.html" class="inline-block bg-primary text-white px-12 py-4 rounded-full font-black uppercase tracking-widest text-sm hover:scale-105 transition-all shadow-xl shadow-primary/20">Open My Letter, Love →</a>
+            <h2 class="font-dancing text-5xl md:text-7xl text-primary mb-4">Nuksss, Galing!! 👏</h2>
+            <p class="text-sm md:text-xl mb-10 text-dark/60">I HOPE NAGUSTUHAN AND MAGUSTUHAN MO RIN YUNG LAST 🤗</p>
+            <a href="letter.html" class="inline-block bg-primary text-white px-8 md:px-12 py-3 md:py-4 rounded-full font-black uppercase tracking-widest text-[10px] md:text-sm hover:scale-105 transition-all shadow-xl shadow-primary/20">Open My Letter, Love →</a>
         </div>
     </main>
 
     <div id="secret-overlay" class="fixed inset-0 bg-white/90 backdrop-blur-md hidden items-center justify-center z-[10000]" onclick="closeSecret()">
         <div class="polaroid-card text-center max-w-xs mx-4" onclick="event.stopPropagation()">
             <p id="secret-text" class="font-bold text-lg mb-8 text-dark"></p>
-            <button class="bg-primary text-white px-8 py-2 rounded-full font-bold text-xs uppercase tracking-widest" onclick="closeSecret()">Close</button>
+            <button class="bg-primary text-white px-8 py-2 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-opacity-80 transition-colors" onclick="closeSecret()">Close</button>
+        </div>
+    </div>
+
+    <div id="fail-overlay" class="fixed inset-0 bg-white/90 backdrop-blur-md hidden items-center justify-center z-[10000]">
+        <div class="polaroid-card text-center max-w-sm mx-4 border-2 border-primary/20 shadow-2xl">
+            <h3 class="font-dancing text-5xl text-primary mb-4">ANG BAGAL, HAYS 😜</h3>
+            <p class="font-bold text-sm md:text-base mb-8 text-dark/80 leading-relaxed">
+                <br>
+                <span class="text-primary text-lg block mt-2">DAHIL DIYAN KISS MO MUNA AKO😘</span>
+            </p>
+            <button class="bg-primary text-white px-8 py-3 rounded-full font-bold text-xs uppercase tracking-widest hover:scale-105 transition-transform shadow-lg shadow-primary/30" onclick="retryLoveMeter()">OKAY NA NAKISS NA HAHAHA</button>
         </div>
     </div>
 
     <script>
+        // Music Function
+        const music = document.getElementById('bg-music');
+        function toggleMusic() { music.paused ? music.play() : music.pause(); }
+
+        // Game State
         const state = {
             quizComplete: false,
             rewardsFound: 0,
             requiredRewards: 2,
             chaseActive: false,
-            attempts: 0,
-            maxAttempts: 20
+            tapCount: 0,
+            tapsRequired: 40,
+            timer: 10.0,
+            timerInterval: null
         };
 
         const quizData = [
@@ -173,13 +225,14 @@
             const qText = document.getElementById('question-text');
             const btnContainer = document.getElementById('answer-buttons');
             const data = quizData[currentQ];
+            
             qText.innerText = data.q;
             btnContainer.innerHTML = '';
 
             data.a.forEach((choice, index) => {
                 const btn = document.createElement('button');
                 btn.innerText = choice;
-                btn.className = 'w-full py-3 px-6 bg-accent text-dark font-bold rounded-xl hover:bg-primary hover:text-white transition-all text-sm uppercase tracking-wider border border-primary/10';
+                btn.className = 'w-full py-3 px-6 bg-accent text-dark font-bold rounded-xl hover:bg-primary hover:text-white transition-all text-xs md:text-sm uppercase tracking-wider border border-primary/10';
                 btn.onclick = () => {
                     if (index === data.correct) {
                         currentQ++;
@@ -206,53 +259,96 @@
             el.classList.add('cheering');
             el.style.opacity = "1";
             state.rewardsFound++;
+            
             showSecret(msg);
-            if (state.rewardsFound === state.requiredRewards) startChasingStage();
-            else updateStatus(`Found ${state.rewardsFound}/${state.requiredRewards}. Keep looking!`);
+            
+            if (state.rewardsFound === state.requiredRewards) {
+                startLoveMeterStage();
+            } else {
+                updateStatus(`Found ${state.rewardsFound}/${state.requiredRewards}. Keep looking!`);
+            }
         }
 
-        function startChasingStage() {
+        function startLoveMeterStage() {
             state.chaseActive = true;
-            updateStatus("FINAL STAGE: CATCH MY HEART! ❤️");
+            state.tapCount = 0;
+            state.timer = 5.0;
+
+            updateStatus("FINAL STAGE: Punuin mo yung Love Meter in 10 seconds! TAP FAST! ❤️");
+            
             const squad = document.getElementById('cheer-squad');
             const s1 = document.getElementById('s1');
             const s2 = document.getElementById('s2');
 
             [s1, s2].forEach(s => {
-                s.className = "relative text-4xl cheering";
-                squad.appendChild(s);
+                if(s) {
+                    s.className = "relative text-4xl cheering";
+                    squad.appendChild(s);
+                }
             });
 
             const boundary = document.getElementById('game-boundary');
-            const heart = document.createElement('div');
-            heart.id = 'heart';
-            heart.innerHTML = '❤️';
-            heart.className = "absolute text-5xl cursor-pointer select-none leading-none z-[100] transition-all duration-100";
-            heart.style.top = "45%"; 
-            heart.style.left = "45%";
             
-            heart.onmouseover = moveHeart;
-            heart.onclick = revealPrize;
-            boundary.appendChild(heart);
+            // Build the Love Meter UI
+            boundary.innerHTML = `
+                <div class="absolute top-8 left-1/2 -translate-x-1/2 w-4/5 max-w-sm h-6 bg-gray-100 rounded-full overflow-hidden shadow-inner border border-gray-200">
+                    <div id="love-meter-bar" class="h-full bg-primary w-0 transition-all duration-75 relative">
+                        <div class="absolute inset-0 bg-white/20 w-full h-full animate-pulse"></div>
+                    </div>
+                </div>
+                <div id="timer-text" class="absolute top-16 left-1/2 -translate-x-1/2 font-bold text-2xl text-primary font-dancing">10.0s</div>
+                
+                <div id="giant-heart" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[100px] md:text-[120px] cursor-pointer select-none transition-transform duration-75 active:scale-90 touch-manipulation" style="-webkit-tap-highlight-color: transparent;">
+                    ❤️
+                </div>
+            `;
+
+            const giantHeart = document.getElementById('giant-heart');
+            
+            // Mobile and Desktop friendly tap events
+            giantHeart.addEventListener('touchstart', (e) => {
+                e.preventDefault(); // Prevents double tap zooming on phones
+                handleHeartTap();
+            }, {passive: false});
+            
+            giantHeart.addEventListener('mousedown', (e) => {
+                handleHeartTap();
+            });
+
+            clearInterval(state.timerInterval);
+            state.timerInterval = setInterval(() => {
+                state.timer -= 0.1;
+                if (state.timer < 0) state.timer = 0; // Prevent negative numbers
+                document.getElementById('timer-text').innerText = state.timer.toFixed(1) + 's';
+                
+                if (state.timer <= 0) {
+                    clearInterval(state.timerInterval);
+                    document.getElementById('timer-text').innerText = '0.0s';
+                    
+                    if (state.tapCount < state.tapsRequired) {
+                        updateStatus("Oh no! Naubusan ka ng oras! 🤪");
+                        showFailOverlay(); // Show the consequence!
+                    }
+                }
+            }, 100);
         }
 
-        function moveHeart() {
-            if (!state.chaseActive) return;
-            const heart = document.getElementById('heart');
-            if (state.attempts >= state.maxAttempts) {
-                heart.style.transition = "0.5s";
-                heart.innerHTML = "😏";
-                updateStatus("Hiningal tuloy... bagal mo kasi 😏");
-                return;
+        function handleHeartTap() {
+            if(state.timer <= 0 || state.tapCount >= state.tapsRequired) return;
+            
+            state.tapCount++;
+            const progress = Math.min((state.tapCount / state.tapsRequired) * 100, 100);
+            document.getElementById('love-meter-bar').style.width = progress + '%';
+            
+            // Make the heart pulse slightly with each tap
+            const heart = document.getElementById('giant-heart');
+            heart.style.transform = `translate(-50%, -50%) scale(${1 + (progress/300)})`;
+            
+            if (state.tapCount >= state.tapsRequired) {
+                clearInterval(state.timerInterval);
+                document.getElementById('timer-text').innerText = "FULL!";
+                setTimeout(revealPrize, 600);
             }
-            const box = document.getElementById('game-boundary');
-            const x = Math.max(0, Math.random() * (box.clientWidth - 60));
-            const y = Math.max(0, Math.random() * (box.clientHeight - 60));
-            heart.style.left = `${x}px`;
-            heart.style.top = `${y}px`;
-            state.attempts++;
-            const statuses = { 5: "Ano bayan, Mabagal 🤪", 8: "Wala to guys, mahina HAHAHAHA 😂", 13: "Konting push na lang! 😂", 16: "Hihingalin na yung puso ko niyan 😂" };
-            if(statuses[state.attempts]) updateStatus(statuses[state.attempts]);
         }
 
         function revealPrize() {
@@ -263,13 +359,28 @@
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
         }
 
-        function updateStatus(msg) { document.getElementById('status-message').innerText = msg; }
+        function updateStatus(msg) { 
+            document.getElementById('status-message').innerText = msg; 
+        }
+
         function showSecret(msg) { 
             document.getElementById('secret-text').innerText = msg; 
             document.getElementById('secret-overlay').classList.replace('hidden', 'flex'); 
         }
-        function closeSecret() { document.getElementById('secret-overlay').classList.replace('flex', 'hidden'); }
-        function goToGallery(type) { window.location.href = `gallery.html?tab=${type}`; }
+
+        function closeSecret() { 
+            document.getElementById('secret-overlay').classList.replace('flex', 'hidden'); 
+        }
+
+        // Penalty Logic
+        function showFailOverlay() {
+            document.getElementById('fail-overlay').classList.replace('hidden', 'flex');
+        }
+
+        function retryLoveMeter() {
+            document.getElementById('fail-overlay').classList.replace('flex', 'hidden');
+            startLoveMeterStage(); // Reset and start the timer again
+        }
 
         function createHeart() {
             const heart = document.createElement('div');
@@ -281,6 +392,7 @@
             document.body.appendChild(heart);
             setTimeout(() => { heart.remove(); }, 10000);
         }
+
         setInterval(createHeart, 600);
 
         window.onload = () => {
