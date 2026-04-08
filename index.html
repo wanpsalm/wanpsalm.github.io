@@ -2,210 +2,261 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Story | Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Our Story | The Library of Us</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Quicksand', sans-serif; background-color: #fdfaf8; color: #4a3a3a; }
-        .font-dancing { font-family: 'Dancing Script', cursive; }
-        .font-signature { font-family: 'Great Vibes', cursive; text-transform: none; }
-
-        /* 1. Subtle Grain Overlay */
-        .grain-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://grainy-gradients.vercel.app/noise.svg');
-            opacity: 0.03; pointer-events: none; z-index: 40;
-        }
-
-        /* 2. Drawing Animation for the Logo */
-        .drawing-path {
-            stroke-dasharray: 1000; stroke-dashoffset: 1000;
-            animation: drawLine 6s ease-out forwards;
-            filter: drop-shadow(0 0 4px rgba(255, 77, 109, 0.2));
-        }
-        @keyframes drawLine { to { stroke-dashoffset: 0; } }
-
-        /* 3. Floating Hearts */
-        @keyframes float {
-            0% { transform: translateY(0px) rotate(0deg); opacity: 0; }
-            50% { opacity: 0.8; }
-            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
-        }
-        .heart {
-            position: fixed; bottom: -10%; user-select: none;
-            pointer-events: none; z-index: 5; animation: float linear forwards;
-        }
-
-        /* 4. Responsive Nav Scaling */
-        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; width: 100%; height: 100%; }
-        .logo-box { width: 200px; margin-top: -15px; transition: width 0.3s ease; flex-shrink: 0; }
-
-        @media (max-width: 768px) {
-            .logo-box { width: 150px; margin-top: -10px;}
-            .nav-link-item { font-size: 11px !important; padding: 0 4px !important; margin: 0 3px !important;}
-        }
-
-        /* 5. RESTORED DASHED TIMELINE UI */
-        .timeline-dot {
-            position: absolute;
-            left: -9px;
-            top: 0.25rem;
-            width: 1rem;
-            height: 1rem;
-            background-color: #ff4d6d;
-            border-radius: 9999px;
-            transition: transform 0.3s;
-            box-shadow: 0 0 10px rgba(255, 77, 109, 0.5);
-            z-index: 10;
-        }
-
-        .timeline-card {
-            position: relative;
-            padding-left: 2rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .timeline-card:hover .timeline-dot { transform: scale(1.5); }
-
-        .timeline-content-box {
-            background: white;
-            padding: 1.25rem;
-            border-radius: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-            border: 1px solid rgba(255, 204, 213, 0.4);
-            transition: all 0.3s ease;
-        }
-
-        .timeline-card:hover .timeline-content-box {
-            border-color: #ff4d6d;
-            box-shadow: 0 10px 25px rgba(255, 77, 109, 0.1);
-            transform: translateX(5px);
-        }
-
-        /* 6. NOSTALGIC MODAL & CENTERED DECK */
-        .modal-overlay {
-            position: fixed; inset: 0;
-            background: rgba(42, 34, 34, 0.85);
-            backdrop-filter: blur(12px);
-            z-index: 5000;
-            display: none;
-            align-items: center; justify-content: center;
-            padding: 20px;
-        }
-
-        .modal-card {
-            background: linear-gradient(135deg, #fffcf9 0%, #f7f1eb 100%);
-            max-width: 650px; width: 100%;
-            max-height: 90vh; overflow-y: auto;
-            border-radius: 12px;
-            padding: 50px 40px;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.4);
-            border: 1px solid #e5dace;
-            position: relative;
-        }
-
-        .photo-deck {
-            position: relative; height: 380px; margin-bottom: 50px;
-            display: grid; place-content: center;
-        }
-
-        .deck-photo {
-            grid-area: 1 / 1; width: 200px; height: 250px; background: #fff;
-            padding: 10px 10px 35px 10px; box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-            border: 1px solid #eee; transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1);
-            opacity: 0; transform: scale(0.8) translateY(20px);
-        }
-
-        .deck-photo img { width: 100%; height: 180px; object-fit: cover; filter: sepia(5%) contrast(105%); }
-
-        .fan-active .deck-photo { opacity: 1; }
-        .fan-active .deck-photo:nth-child(1) { transform: translate(-110px, -15px) rotate(-15deg); }
-        .fan-active .deck-photo:nth-child(2) { transform: translate(-55px, 5px) rotate(-8deg); }
-        .fan-active .deck-photo:nth-child(3) { transform: translate(0px, -10px) rotate(2deg) scale(1.05); z-index: 50; }
-        .fan-active .deck-photo:nth-child(4) { transform: translate(55px, 8px) rotate(10deg); }
-        .fan-active .deck-photo:nth-child(5) { transform: translate(110px, -12px) rotate(18deg); }
-
-        #modal-content p { text-align: justify; text-indent: 40px; line-height: 1.8; margin-bottom: 1.5rem; color: #5d4d4d; }
-
-        #music-toggle {
-            position: fixed; bottom: 25px; right: 25px; z-index: 1001; background: white;
-            border: 1px solid #ffccd5; width: 45px; height: 45px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.2); transition: all 0.3s ease;
-        }
-
-        @media (max-width: 640px) {
-            .photo-deck { height: 280px; margin-bottom: 30px;}
-            .deck-photo { width: 130px; height: 160px; padding: 6px 6px 20px 6px;}
-            .deck-photo img { height: 110px; }
-
-    /* Binawasan natin ang "translate" (yung pag-spread) para hindi lumabas sa screen */
-            .modal-card.fan-active .deck-photo:nth-child(1) { transform: translate(-60px, -10px) rotate(-12deg) scale(0.9); }
-            .modal-card.fan-active .deck-photo:nth-child(2) { transform: translate(-30px, 3px) rotate(-6deg) scale(0.95); }
-            .modal-card.fan-active .deck-photo:nth-child(3) { transform: translate(0px, -5px) rotate(2deg) scale(1.02); }
-            .modal-card.fan-active .deck-photo:nth-child(4) { transform: translate(30px, 5px) rotate(6deg) scale(0.95); }
-            .modal-card.fan-active .deck-photo:nth-child(5) { transform: translate(60px, -8px) rotate(12deg) scale(0.9); }
-        }
-
-        /* Notebook View for many photos */
-        .notebook-view {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            padding: 20px;
-            background: #fffdf9;
-            border-left: 20px solid #eee; /* Parang spiral or binding ng notebook */
-            box-shadow: inset 5px 0 10px rgba(0,0,0,0.05);
-            border-radius: 4px;
-        }
-
-        /* Overlay para sa Stack */
-        .stack-overlay {
-            position: absolute;
-            inset: 0;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-            border-radius: 2px;
-            cursor: pointer;
-            z-index: 100;
-            backdrop-filter: blur(2px);
-            transition: background 0.3s ease;
-        }
-
-        @media (max-width: 640px) {
-            .notebook-view { grid-template-columns: 1fr; } /* Single column sa mobile */
-        }
-    </style>
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { primary: '#ff4d6d', secondary: '#ffccd5', accent: '#fff0f3', dark: '#4a3a3a' }
+                    colors: {
+                        primary: '#ff4d6d',
+                        secondary: '#ffccd5',
+                        accent: '#fff0f3',
+                        paper: '#fffef2',
+                        wood: '#5d4037',
+                        dark: '#4a3a3a'
+                    }
                 }
             }
         }
     </script>
+
+    <style>
+        :root {
+            --primary: #ff4d6d;
+            --secondary: #ffccd5;
+            --accent: #fff0f3;
+            --paper: #fffef2;
+            --wood: #5d4037;
+        }
+
+        body { 
+            font-family: 'Quicksand', sans-serif; 
+            background: #fdfaf8; 
+            color: var(--dark); 
+            overflow-x: hidden; 
+            width: 100%; 
+        }
+        
+        .font-dancing { font-family: 'Dancing Script', cursive; }
+        .font-signature { font-family: 'Great Vibes', cursive; text-transform: none; }
+
+        /* --- HEADER & NAV --- */
+        .nav-wrapper { 
+            display: flex; justify-content: space-between; align-items: center; 
+            width: 100%; height: 100%; 
+        }
+        .logo-box { 
+            width: 200px; margin-top: -15px; transition: width 0.3s ease; flex-shrink: 0; 
+        }
+        .drawing-path { 
+            stroke-dasharray: 1000; stroke-dashoffset: 1000; animation: drawLine 6s ease-out forwards; filter: drop-shadow(0 0 4px rgba(255, 77, 109, 0.2)); 
+        }
+        @keyframes drawLine { to { stroke-dashoffset: 0; } }
+
+        /* --- LIBRARY SHELF DESIGN --- */
+        .notebook-grid { 
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px 40px; 
+            max-width: 1100px; margin: 0 auto; padding: 40px 20px;
+        }
+        .shelf-row {
+            border-bottom: 16px solid var(--wood); border-radius: 4px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); margin-bottom: 40px; position: relative;
+        }
+
+        /* --- NOTEBOOK COVER --- */
+        .notebook-cover {
+            background: var(--paper); aspect-ratio: 3/4; border-radius: 4px 12px 12px 4px;
+            border-left: 18px solid var(--primary); box-shadow: 10px 10px 25px rgba(0,0,0,0.1);
+            padding: 20px 15px 20px 45px; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; 
+            position: relative; transform-style: preserve-3d;
+        }
+        .notebook-cover::before {
+            content: ""; position: absolute; left: 8px; top: 0; bottom: 0; width: 30px;
+            background-image: radial-gradient(circle, #444 15%, transparent 20%), linear-gradient(to right, transparent 40%, #bbb 45%, #888 50%, #bbb 55%, transparent 60%);
+            background-size: 30px 25px; z-index: 5; opacity: 0.8;
+        }
+        .notebook-cover:hover { 
+            transform: translateY(-25px) rotateY(-10deg); box-shadow: 20px 30px 50px rgba(255, 77, 109, 0.25); 
+        }
+        .gold-plate {
+            background: linear-gradient(135deg, #d4af37, #f1d592, #d4af37); color: var(--wood); 
+            font-size: 9px; font-weight: bold; padding: 2px 10px; border-radius: 1px; 
+            border: 1px solid #b8860b; margin-top: 15px; letter-spacing: 1px; box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        /* --- MODAL --- */
+        .modal-overlay { 
+            position: fixed; inset: 0; background: rgba(26, 18, 18, 0.96); backdrop-filter: blur(15px); 
+            z-index: 5000; display: none; align-items: center; justify-content: center; padding: 15px;
+        }
+        .book-container { 
+            display: grid; grid-template-columns: 1fr 1fr; max-width: 1200px; width: 100%; height: 85vh; 
+            background: #dccdbd; border-radius: 8px; overflow: hidden; position: relative;
+            transform-origin: center; transform: rotateY(-90deg); transition: transform 0.8s cubic-bezier(0.15, 0.85, 0.35, 1); perspective: 2500px;
+        }
+        .modal-overlay.active .book-container { transform: rotateY(0deg); }
+
+        /* --- PAGES --- */
+        .book-page { 
+            background: var(--paper); padding: 45px; position: relative;
+            background-image: linear-gradient(#e5e5e5 1px, transparent 1px); background-size: 100% 30px; 
+            display: flex; flex-direction: column; overflow-y: auto; scrollbar-width: none;
+        }
+        .book-page::-webkit-scrollbar { display: none; }
+        .left-page { border-right: 1px solid rgba(0,0,0,0.1); box-shadow: inset -10px 0 30px rgba(0,0,0,0.02); }
+        .right-page { border-left: 1px solid rgba(255,255,255,0.8); box-shadow: inset 10px 0 30px rgba(0,0,0,0.02); }
+        .book-binding { 
+            position: absolute; left: 50%; top: 0; bottom: 0; width: 40px; transform: translateX(-50%); 
+            z-index: 50; background: linear-gradient(90deg, rgba(0,0,0,0.2) 0%, rgba(255,255,255,0.4) 50%, rgba(0,0,0,0.2) 100%); pointer-events: none; 
+        }
+
+        /* --- PHOTOS (GLOBAL BASE) --- */
+        .inner-photo-grid { margin-top: 10px; }
+        .polaroid-mini { 
+            background: white; padding: 6px 6px 18px 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+            border: 1px solid #eee; transform: rotate(var(--r)); transition: 0.3s; cursor: pointer; position: relative; width: 100%; 
+        }
+        .polaroid-mini::after {
+            content: ""; position: absolute; top: -8px; left: 50%; width: 40px; height: 12px; background: rgba(255, 77, 109, 0.2);
+            transform: translateX(-50%) rotate(-3deg); backdrop-filter: blur(1px);
+        }
+        .polaroid-mini img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+
+        /* --- DESKTOP SPECIFIC PHOTOS (CENTERED & DYNAMIC SIZE) --- */
+        @media (min-width: 769px) {
+            .inner-photo-grid {
+                display: flex; flex-wrap: wrap; justify-content: center; align-content: center; 
+                gap: 15px; flex: 1; height: 100%; width: 100%;
+            }
+            .polaroid-mini { flex: 0 0 auto; width: calc(33.333% - 15px); max-width: 110px; }
+            
+            /* DYNAMIC SIZES BASED ON COUNT */
+            .desktop-count-1 .polaroid-mini { max-width: 250px; width: 80%; }
+            .desktop-count-2 .polaroid-mini { max-width: 180px; width: 45%; }
+            .desktop-count-3 .polaroid-mini { max-width: 160px; width: 45%; }
+            .desktop-count-4 .polaroid-mini { max-width: 140px; width: 45%; }
+            .desktop-count-5 .polaroid-mini { max-width: 120px; width: 30%; }
+            .desktop-count-6 .polaroid-mini { max-width: 120px; width: 30%; }
+        }
+
+        /* --- REALISTIC BOOK PAGE FLIP ANIMATION --- */
+        .page-content-wrapper { height: 420px; overflow: hidden; position: relative; }
+        
+        @keyframes pageTurnNext {
+            0% { transform: perspective(1000px) rotateY(0deg); opacity: 1; }
+            49% { transform: perspective(1000px) rotateY(-60deg) scale(0.95); opacity: 0; }
+            50% { transform: perspective(1000px) rotateY(0deg) scale(1); opacity: 0; }
+            100% { transform: perspective(1000px) rotateY(0deg) scale(1); opacity: 1; }
+        }
+
+        @keyframes pageTurnPrev {
+            0% { transform: perspective(1000px) rotateY(0deg) scale(1); opacity: 1; }
+            49% { transform: perspective(1000px) rotateY(0deg) scale(1); opacity: 0; }
+            50% { transform: perspective(1000px) rotateY(-60deg) scale(0.95); opacity: 0; }
+            100% { transform: perspective(1000px) rotateY(0deg) scale(1); opacity: 1; }
+        }
+
+        .animate-page-next {
+            animation: pageTurnNext 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            transform-origin: left center;
+        }
+
+        .animate-page-prev {
+            animation: pageTurnPrev 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            transform-origin: left center;
+        }
+
+        .page-nav-btn { 
+            background: var(--primary); color: white; padding: 8px 25px; border-radius: 30px; font-size: 11px; 
+            font-weight: 800; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+        }
+
+        /* --- TEXT FORMATTING --- */
+        #text-area p {
+            text-align: justify;
+            text-indent: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        #text-area p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* --- MOBILE REFINEMENTS --- */
+        @media (max-width: 768px) {
+            .notebook-grid { grid-template-columns: repeat(2, 1fr); gap: 25px 15px; padding: 20px 10px; }
+            .logo-box { width: 140px; }
+            .notebook-wrapper { max-width: 100%; }
+            .notebook-cover { padding: 15px 10px 15px 20px; border-left-width: 10px; border-radius: 3px 8px 8px 3px; }
+            .notebook-cover::before { left: 4px; width: 20px; background-size: 20px 20px; }
+            .notebook-cover h3 { font-size: 1.1rem; margin-bottom: 2px; }
+            .notebook-cover p.sub-text { font-size: 7px; letter-spacing: 0.05em; }
+            .notebook-cover .divider { margin: 10px 0; width: 24px; }
+            .notebook-cover p.brief-text { font-size: 8px; line-height: 1.2; }
+            .gold-plate { font-size: 8px; padding: 3px 10px; margin-top: 15px; }
+            
+            .book-container { flex-direction: column; height: 92dvh; transform: translateY(30px); opacity: 0; }
+            .modal-overlay.active .book-container { transform: translateY(0); opacity: 1; }
+            .book-binding { display: none; }
+            
+            .left-page { flex: 0 0 38%; padding: 15px; border-right: none; border-bottom: 2px dashed var(--secondary); }
+            .right-page { flex: 1 1 0; padding: 15px; display: flex; flex-direction: column; }
+
+            /* MOBILE GRIDS (PROTECTED FROM DESKTOP) */
+            .inner-photo-grid.mobile-fit { display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: center; align-items: center; gap: 8px; width: 100%; height: 100%; padding-bottom: 5px; }
+            .inner-photo-grid.mobile-fit .polaroid-mini { flex: 0 1 25%; min-width: 0; max-width: none; width: auto; }
+            
+            .inner-photo-grid.mobile-carousel { display: flex; flex-direction: row; align-items: center; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; height: 100%; padding-bottom: 5px; }
+            .inner-photo-grid.mobile-carousel::-webkit-scrollbar { display: none; }
+            .inner-photo-grid.mobile-carousel .polaroid-mini { flex: 0 0 35%; scroll-snap-align: center; transform: none !important; max-width: none; width: auto; }
+
+            .page-content-wrapper { height: 100%; margin-bottom: 10px; }
+            #pagination-controls { padding-top: 10px; }
+            #modal-date { font-size: 2rem; margin-bottom: 0; }
+            
+            /* Text indent adjustment for mobile */
+            #text-area p { text-indent: 1.5rem; margin-bottom: 1rem; }
+        }
+
+        @media (max-width: 640px) {
+            .book-container { grid-template-columns: 1fr; height: 90vh; transform: translateY(50px) scale(0.9); opacity: 0; transition: all 0.5s ease; }
+            .modal-overlay.active .book-container { transform: translateY(0) scale(1); opacity: 1; }
+            .book-binding { display: none; }
+            .left-page { height: 280px; min-height: 280px; border-right: none; border-bottom: 2px dashed var(--secondary); padding: 20px; }
+            .inner-photo-grid { display: flex !important; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; padding: 10px 0 20px 0; width: 100%; }
+            .inner-photo-grid::-webkit-scrollbar { display: none; }
+            .polaroid-mini { flex: 0 0 65%; scroll-snap-align: center; transform: none !important; }
+            .right-page { padding: 30px 20px; height: auto; }
+            .page-content-wrapper { height: auto; min-height: 200px; max-height: none; }
+            #pagination-controls { padding-top: 20px; }
+        }
+
+        /* --- LIGHTBOX & UTILS --- */
+        #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        #lightbox img { max-height: 85vh; width: auto; border: 12px solid white; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+        .heart { position: fixed; bottom: -10%; user-select: none; pointer-events: none; z-index: 5; animation: float linear forwards; }
+        @keyframes float { 0% { transform: translateY(0px) rotate(0deg); opacity: 0; } 50% { opacity: 0.8; } 100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }
+        #music-toggle { position: fixed; bottom: 25px; right: 25px; z-index: 1001; background: white; border: 1px solid var(--secondary); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 20px rgba(255, 77, 109, 0.2); }
+    </style>
 </head>
 <body class="overflow-x-hidden antialiased">
-
-    <div class="grain-overlay"></div>
+    
     <div id="heart-bg" class="fixed inset-0 pointer-events-none z-0"></div>
-
+    
     <audio id="bg-music" loop>
         <source src="/MUSIC/Over October - Intertwine (Official Lyric Video) ft. The Ridleys.mp3" type="audio/mpeg">
     </audio>
-
+    
     <div id="music-toggle" onclick="toggleMusic()">
         <span id="music-icon">🎵</span>
     </div>
 
-    <nav class="sticky top-0 bg-white/70 backdrop-blur-xl border-b border-gray-100 z-[1000] shadow-sm">
+    <nav class="sticky top-0 bg-white/80 backdrop-blur-xl border-b border-gray-100 z-[1000] shadow-sm">
         <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 nav-wrapper">
             <div class="logo-box">
                 <svg viewBox="0 0 180 60" class="font-signature w-full h-full">
@@ -213,346 +264,209 @@
                     <text id="final-text" x="0" y="45" fill="#ff4d6d" class="opacity-0 transition-opacity duration-1000 text-3xl">Our Story</text>
                 </svg>
             </div>
-            <div class="flex items-center gap-6 md:gap-12">
-                <a href="index.html" class="nav-link-item font-bold text-primary border-b-2 border-primary uppercase text-xs tracking-widest">Timeline</a>
-                <div class="relative group">
-                    <button class="nav-link-item font-bold text-gray-400 hover:text-primary transition-all uppercase text-xs tracking-widest py-2">Albums ▾</button>
-                    <div class="absolute left-1/2 -translate-x-1/2 hidden group-hover:block bg-white shadow-xl rounded-xl p-2 min-w-[160px] animate-in fade-in slide-in-from-top-2 border border-gray-50">
-                        <button onclick="goToGallery('photos')" class="w-full text-left px-4 py-2 hover:bg-accent rounded-lg transition-colors text-xs font-bold uppercase text-dark/70">📸 Photos</button>
-                        <button onclick="goToGallery('videos')" class="w-full text-left px-4 py-2 hover:bg-accent rounded-lg transition-colors text-xs font-bold uppercase text-dark/70">🎥 Videos</button>
-                    </div>
-                </div>
-                </div>
+            <div class="flex items-center gap-4 md:gap-12">
+                <a href="index.html" class="font-bold text-primary border-b-2 border-primary uppercase text-[10px] md:text-xs tracking-widest py-2 transition-all">Timeline</a>
+                <button onclick="window.location.href='/HTML/gallery.html?tab=photos'" class="font-bold text-gray-400 border-b-2 border-transparent hover:text-primary hover:border-primary transition-all uppercase text-[10px] md:text-xs tracking-widest py-2">Albums</button>
+                <button onclick="window.location.href='/HTML/gallery.html?tab=videos'" class="font-bold text-gray-400 border-b-2 border-transparent hover:text-primary hover:border-primary transition-all uppercase text-[10px] md:text-xs tracking-widest py-2">Videos</button>
+            </div>
         </div>
     </nav>
 
-    <header class="relative h-[70vh] flex items-center justify-center text-center overflow-hidden">
-        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-[15s] hover:scale-110" 
-             style="background-image: linear-gradient(rgba(253, 250, 248, 0.4), rgba(253, 250, 248, 0.8)), url('https://images.unsplash.com/photo-1518562180175-34a163b159c1?q=80&w=2070');">
-        </div>
-        <div class="relative z-10 px-4 mt-10">
-            <h1 class="font-dancing text-5xl md:text-8xl text-primary drop-shadow-md animate-bounce">
-                Hi Binibini!
-            </h1>
-            <div class="h-1 w-24 bg-primary/20 mx-auto mt-6 rounded-full"></div>
-            <p class="mt-6 text-sm font-bold tracking-[0.3em] uppercase text-dark/60">YOU'RE ONE OF THE GREATEST PLOT TWIST IN MY LIFE</p>
-        </div>
-    </header>
+    <main class="max-w-7xl mx-auto px-4 py-8 md:py-12 relative z-10">
+        <header class="text-center mb-12 md:mb-16">
+            <h1 class="font-dancing text-5xl md:text-8xl text-primary mb-4">The Library of Us</h1>
+            <div class="w-24 h-1 bg-primary/20 mx-auto rounded-full"></div>
+            <p class="mt-6 text-[10px] md:text-[11px] font-bold uppercase tracking-[0.4em] text-dark/40">For my favorite person</p>
+        </header>
 
-    <section class="max-w-4xl mx-auto px-6 py-24 relative z-10">
-        <div class="text-center mb-16">
-            <h2 class="font-dancing text-6xl text-primary mb-4">Our Chapters</h2>
-            <div class="w-24 h-1 bg-secondary/40 mx-auto rounded-full"></div>
-        </div>
+        <div id="notebook-grid-container" class="notebook-grid"></div>
+    </main>
 
-        <div class="relative border-l-2 border-dashed border-primary/40 ml-6 md:ml-0 md:mx-auto max-w-lg space-y-12">
-            
-            <div class="timeline-card" onclick="openStory('july')">
-                <div class="timeline-dot"></div>
-                <h3 class="font-bold text-primary text-2xl">JULY 2025</h3>
-                <div class="timeline-content-box">
-                    <p class="text-dark/80 leading-relaxed italic">The Month You Made the First Move HAHAHAHAHAHA...</p>
-                </div>
-            </div>
-
-            <div class="timeline-card" onclick="openStory('august')">
-                <div class="timeline-dot"></div>
-                <h3 class="font-bold text-primary text-2xl">AUGUST 2025</h3>
-                <div class="timeline-content-box">
-                    <p class="text-dark/80 leading-relaxed italic">The Month I Started Courting You Silently...</p>
-                </div>
-            </div>
-            
-            <div class="timeline-card" onclick="openStory('september')">
-                <div class="timeline-dot"></div>
-                <h3 class="font-bold text-primary text-2xl">SEPTEMBER 2025</h3>
-                <div class="timeline-content-box">
-                    <p class="text-dark/80 leading-relaxed italic">The Month I Started to Call you Binibini and our First Meal Together</p>
-                </div>
-            </div>
-
-            <div class="timeline-card" onclick="openStory('october')">
-                <div class="timeline-dot"></div>
-                <h3 class="font-bold text-primary text-2xl">OCTOBER 2025</h3>
-                <div class="timeline-content-box">
-                    <p class="text-dark/80 leading-relaxed italic">The month you made the first move HAHAHAHAHAHA...</p>
-                </div>
-            </div>
-
-            <div class="timeline-card" onclick="openStory('november')">
-                <div class="timeline-dot"></div>
-                <h3 class="font-bold text-primary text-2xl">NOVEMBER 2025</h3>
-                <div class="timeline-content-box">
-                    <p class="text-dark/80 leading-relaxed italic">The month you made the first move HAHAHAHAHAHA...</p>
-                </div>
-            </div>
-
-            <div class="timeline-card" onclick="openStory('december')">
-                <div class="timeline-dot"></div>
-                <h3 class="font-bold text-primary text-2xl">DECEMBER 2025</h3>
-                <div class="timeline-content-box">
-                    <p class="text-dark/80 leading-relaxed italic">The month you made the first move HAHAHAHAHAHA...</p>
-                </div>
-            </div>
-
-            <div class="timeline-card" onclick="openStory('january')">
-                <div class="timeline-dot"></div>
-                <h3 class="font-bold text-primary text-2xl">JANUARY 2026</h3>
-                <div class="timeline-content-box">
-                    <p class="text-dark/80 leading-relaxed italic">The month you made the first move HAHAHAHAHAHA...</p>
-                </div>
-            </div>
-
-            <div class="timeline-card" onclick="openStory('february')">
-                <div class="timeline-dot"></div>
-                <h3 class="font-bold text-primary text-2xl">FEBRUARY 2026</h3>
-                <div class="timeline-content-box">
-                    <p class="text-dark/80 leading-relaxed italic">The month you made the first move HAHAHAHAHAHA...</p>
-                </div>
-            </div>
-
-            <div class="timeline-card" onclick="openStory('march')">
-                <div class="timeline-dot"></div>
-                <h3 class="font-bold text-primary text-2xl">MARCH 2026</h3>
-                <div class="timeline-content-box">
-                    <p class="text-dark/80 leading-relaxed italic">The month you made the first move HAHAHAHAHAHA...</p>
-                </div>
-            </div> 
-
-            <div class="timeline-card" onclick="openStory('april')">
-                <div class="timeline-dot"></div>
-                <h3 class="font-bold text-primary text-2xl text-primary">APRIL 2026</h3>
-                <div class="timeline-content-box ring-2 ring-primary/20">
-                    <p class="leading-relaxed font-bold text-primary">Still falling for you every day. A new surprise awaits inside... ❤️</p>
-                </div>
-            </div>
-
-        </div>
-    </section>
+    <div id="lightbox" onclick="this.style.display='none'">
+        <img src="" id="lightbox-img">
+    </div>
 
     <div id="story-modal" class="modal-overlay" onclick="closeStory()">
-        <div id="modal-card" class="modal-card animate-in zoom-in duration-300" onclick="event.stopPropagation()">
-            <div class="flex justify-between items-start mb-6">
-                <div>
-                    <h3 id="modal-date" class="font-dancing text-4xl text-primary mb-1"></h3>
-                    <p id="modal-subtitle" class="text-[10px] font-bold tracking-[0.2em] uppercase text-dark/40"></p>
-                </div>
-                <button onclick="closeStory()" class="text-primary font-bold text-lg">✕</button>
+        <div class="book-container shadow-2xl" onclick="event.stopPropagation()">
+            <div class="book-binding"></div>
+            
+            <div class="book-page left-page" id="left-page">
+                <h3 id="modal-date" class="font-dancing text-3xl md:text-5xl text-primary mb-1 text-center"></h3>
+                <p id="modal-subtitle" class="text-[9px] font-bold tracking-[0.3em] uppercase text-dark/40 mb-4 text-center"></p>
+                <div id="photo-area" class="inner-photo-grid"></div>
             </div>
-            <div id="modal-content"></div>
+
+            <div class="book-page right-page" id="right-page">
+                <button onclick="closeStory()" class="absolute top-4 right-6 text-primary/40 hover:text-primary transition-colors text-2xl z-50">✕</button>
+                <div class="page-content-wrapper" id="text-wrapper">
+                    <div id="text-area" class="mt-4 prose prose-pink leading-relaxed italic text-dark/80"></div>
+                </div>
+                <div id="pagination-controls" class="flex gap-4 mt-auto justify-center pb-2"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        // MUSIC LOGIC
         const music = document.getElementById('bg-music');
-        const musicIcon = document.getElementById('music-icon');
         let hasStarted = false;
+        let currentPage = 0;
 
-        function startMusic() {
-            if (!hasStarted) {
-                music.play().then(() => {
-                    musicIcon.innerText = "⏸️";
-                    hasStarted = true;
-                    window.removeEventListener('scroll', startMusic);
-                    window.removeEventListener('click', startMusic);
-                }).catch(e => console.log("Waiting for user interaction..."));
-            }
-        }
-
-        function toggleMusic() {
-            if (music.paused) { music.play(); musicIcon.innerText = "⏸️"; }
-            else { music.pause(); musicIcon.innerText = "🎵"; }
-        }
-
-        window.addEventListener('scroll', startMusic);
-        window.addEventListener('click', startMusic);
-
-        // STORY DATA
         const storyData = {
             'july': {
-                date: "JULY 2025",
-                subtitle: "The Beginning",
+                date: "JULY 2025", sub: "The Risk", brief: "The Month When You Made Your First Move HAHAHAHAHA",
                 imgs: ["/TIMELINE/1.jpg", "/TIMELINE/2.jpg"],
                 text: `<p>July will always be the month of my greatest risk in love. Even now, I wonder what would have happened if you didn't like my note back then. What would we be now if I hadn't reached out? <p/>
-                    
                 <p>Kung bibigyan pa nga ako ng paulit ulit na chance kung irereach out kita sa time na to? Palagi kong gagawin without and hesitations, doubt, and second thought. <p/>
-                    
                 <p>I still remember the time you accepted my follew request and follow me back in just a couple of minutes, hindi sa pagmamayabang pero nakaramdam agad ako ng pag asa nung time na yun HAHAHAHAH though wala akong balak ipursue ka if di ka nagbibigay ng sign, pero ayun nga hanggang sa ilike mo yung notes ko HAHAHAHAHA I felt like I'm one of the luckiest kumag when you replied to my confession and gives me the answer "Hope to know you rin". dun palang feeling ko gusto mo na ako eh, HAHAHAHAHAHA eme
-                    
                 <p>Again thank you for accepting me and giving me a chance to prove myself, I'll always be thankful ay Lord, for letting me see your name sa instagram<p/>`
             },
-            'august': {
-                date: "AUGUST 2025",
-                subtitle: "Start of Courting",
-                imgs: [],
-                text: `
-                <p>This is the month when we met for the first time. Actually, August is one of my favorite months with you.</p>
+            'august': { 
+                date: "AUGUST 2025", sub: "First Meet", brief: "The Month I Started To Court You Silently...", 
+                imgs: [], 
+                text: `<p>This is the month when we met for the first time. Actually, August is one of my favorite months with you.</p>
                 <p>"August 29, 2025". This was the day when I finally had the courage to invite you to eat out, And you said "Yes", Believe it or not, super butterflies in my stomach talaga ako nung time na 'yan. Sobrang excited ko kasi first time nating magkaharap nang matagal. Usually kasi sa school, malayo ka or busy makipag-usap, kaya sobrang saya ko nung nag-yes ka. Kahit saglit lang tayo nun, okay na ako—alam ko naman kasing mahirap sumakay pauwi sa inyo at mahaba ang pila.<P/>
                 <P>Nung nasa Mixue tayo, honestly, natitig talaga ako sa eyes and smile mo. If napansin mong nakatitig ako, 'yun talaga ang reason. I’m just so glad na our first meet went really well. Ang galing din kasi end na ng August nun, so bago pa mag-birth month ko, nakapag-date na tayo in person."<p/>
                 <p>This was the moment na sinabi ko sa sarili ko "I'm gonna pursue her, No matter what"<p/><bt>
-                <p>PS. WE DON'T HAVE PICTURES THAT TIME KASI DI PA TAYO GANUN KA CLOSE HAHAHAHA<p/>`
+                <p>PS. WE DON'T HAVE PICTURES THAT TIME KASI DI PA TAYO GANUN KA CLOSE HAHAHAHA<p/>` 
             },
-            'september': {
-                date: "SEPTEMBER 2025",
-                subtitle: "The Courting",
-                imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg"],
-                text: `<p>From our first shared meals to realizing we shared the same soul. Those nights made me love you more.</p>
-                       <p>It wasn't just about courting; it was about discovering the person I want to be with forever.</p>`
+            'september': { 
+                date: "SEPTEMBER 2025", sub: "Psalm to Binibini", brief: "First Date and First Meal Together", 
+                imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg"], 
+                text: `<p>From our first shared meals to realizing we shared the same soul. Those nights made me love you more and more.</p>` 
             },
-            'october': {
-                date: "OCTOBER 2025",
-                subtitle: "The Courting",
-                imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg"],
-                text: `<p>From our first shared meals to realizing we shared the same soul. Those nights made me love you more.</p>
-                       <p>It wasn't just about courting; it was about discovering the person I want to be with forever.</p>`
-            },
-            'november': {
-                date: "NOVEMBER 2025",
-                subtitle: "The Courting",
-                imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg"],
-                text: `<p>From our first shared meals to realizing we shared the same soul. Those nights made me love you more.</p>
-                       <p>It wasn't just about courting; it was about discovering the person I want to be with forever.</p>`
-            },
-            'december': {
-                date: "DECEMBER 2025",
-                subtitle: "The Courting",
-                imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg"],
-                text: `<p>From our first shared meals to realizing we shared the same soul. Those nights made me love you more.</p>
-                       <p>It wasn't just about courting; it was about discovering the person I want to be with forever.</p>`
-            },
-            'january': {
-                date: "JANUARY 2026",
-                subtitle: "The Courting",
-                imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg"],
-                text: `<p>From our first shared meals to realizing we shared the same soul. Those nights made me love you more.</p>
-                       <p>It wasn't just about courting; it was about discovering the person I want to be with forever.</p>`
-            },
-            'february': {
-                date: "FEBRUARY 2026",
-                subtitle: "The Courting",
-                imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg"],
-                text: `<p>From our first shared meals to realizing we shared the same soul. Those nights made me love you more.</p>
-                       <p>It wasn't just about courting; it was about discovering the person I want to be with forever.</p>`
-            },
-            'march': {
-                date: "MARCH 2026",
-                subtitle: "The Courting",
-                imgs: ["/FOODS/1.jpg", "/FOODS/2.jpg", "/FOODS/3.jpg", "/FOODS/2.jpg"],
-                text: `<p>From our first shared meals to realizing we shared the same soul. Those nights made me love you more.</p>
-                       <p>It wasn't just about courting; it was about discovering the person I want to be with forever.</p>`
-            },
-            'april': {
-                date: "APRIL 2026",
-                subtitle: "A New Chapter",
-                imgs: ["/YOURS/1.jpg", "/YOURS/2.jpg"],
-                text: `<p>Every second spent with you is my favorite second. I'm so lucky you're mine.</p>
-                       <p>I continue to choose you, today and every day after. Since you've reached this far in our timeline, I have something special prepared just for you.</p>
-                       <div class="mt-8 text-center">
-                           <a href="/HTML/game.html" class="inline-block bg-primary text-white px-8 py-3 rounded-full text-xs font-black uppercase tracking-widest shadow-lg hover:scale-105 transition-transform">
-                               ✨ Open The Surprise
-                           </a>
-                       </div>`
+            'april': { 
+                date: "APRIL 2026", sub: "Forever", brief: "Still falling for you every day...", 
+                imgs: ["/YOURS/1.jpg"], 
+                text: `<p>You are my greatest plot twist and my best decision. I love you more than words can express.</p><div class='mt-10 text-center'><a href='/HTML/game.html' class='bg-primary text-white px-10 py-4 rounded-full text-xs font-black shadow-xl'>✨ Open Surprise</a></div>` 
             }
         };
 
+        const grid = document.getElementById('notebook-grid-container');
+        Object.keys(storyData).forEach((key, index) => {
+            const data = storyData[key];
+            grid.innerHTML += `
+                <div class="flex flex-col items-center">
+                    <div class="notebook-cover w-full" onclick="openStory('${key}')">
+                        <h3 class="font-dancing text-2xl text-primary mb-2">${data.date}</h3>
+                        <p class="text-[9px] uppercase tracking-widest font-bold">${data.sub}</p>
+                        <div class="h-px w-8 bg-primary/30 my-4"></div>
+                        <p class="text-[10px] italic text-dark/50">${data.brief}</p>
+                    </div>
+                    <div class="gold-plate">Chapter ${index + 1}</div>
+                </div>`;
+        });
+
         function openStory(key) {
-    const data = storyData[key];
-    const modalContent = document.getElementById('modal-content');
-    document.getElementById('modal-date').innerText = data.date;
-    document.getElementById('modal-subtitle').innerText = data.subtitle;
+            currentPage = 0;
+            const data = storyData[key];
+            const modal = document.getElementById('story-modal');
+            const photoArea = document.getElementById('photo-area');
+            const textArea = document.getElementById('text-area');
+            
+            document.getElementById('modal-date').innerText = data.date;
+            document.getElementById('modal-subtitle').innerText = data.sub;
 
-    let photoDeckHtml = '';
-    
-    if (data.imgs && data.imgs.length > 0) {
-        if (data.imgs.length <= 5) {
-            // STANDARD VIEW (1-5 cards centered)
-            const count = data.imgs.length;
-            photoDeckHtml = `<div class="photo-deck">
-                ${data.imgs.map((url, i) => {
-                    const offset = (i - (count - 1) / 2) * 60;
-                    const rotation = (i - (count - 1) / 2) * 8;
-                    return `<div class="deck-photo" style="z-index: ${i}; transform: translate(${offset}px, 0px) rotate(${rotation}deg); opacity: 1;">
-                                <img src="${url}" alt="Memory">
-                            </div>`;
-                }).join('')}
-            </div>`;
-        } else {
-            // COMPRESSED STACK VIEW (Higit sa 5 photos)
-            // Ipapakita lang natin ang unang 5 bilang preview stack
-            photoDeckHtml = `<div class="photo-deck" onclick="openNotebook('${key}')" style="cursor:pointer;">
-                ${data.imgs.slice(0, 5).map((url, i) => {
-                    const offset = (i - 2) * 15; // Tighter stack
-                    const rotation = (i - 2) * 5;
-                    return `<div class="deck-photo" style="z-index: ${i}; transform: translate(${offset}px, 0px) rotate(${rotation}deg); opacity: 1;">
-                                <img src="${url}" alt="Memory">
-                                ${i === 4 ? `<div class="stack-overlay">+${data.imgs.length - 4} More</div>` : ''}
-                            </div>`;
-                }).join('')}
-            </div>
-            <p class="text-center text-xs text-primary font-bold mb-4 uppercase tracking-widest">Tap the stack to open notebook 📖</p>`;
-        }
-    }
+            let displayImgs = data.imgs;
+            if (window.innerWidth > 768 && displayImgs.length > 9) {
+                displayImgs = displayImgs.slice(0, 9);
+            }
 
-    modalContent.innerHTML = photoDeckHtml + data.text;
-    document.getElementById('story-modal').style.display = 'flex';
-    
-    setTimeout(() => { 
-        document.getElementById('modal-card').classList.add('active'); 
-        if (data.imgs.length > 0) document.getElementById('modal-card').parentElement.classList.add('fan-active'); 
-    }, 10);
-    document.body.style.overflow = 'hidden';
-}
+            photoArea.className = "inner-photo-grid"; 
+            if (window.innerWidth <= 768) {
+                if (displayImgs.length > 0 && displayImgs.length <= 5) {
+                    photoArea.classList.add('mobile-fit');
+                } else if (displayImgs.length > 5) {
+                    photoArea.classList.add('mobile-carousel');
+                }
+            } else {
+                photoArea.classList.add(`desktop-count-${displayImgs.length}`);
+            }
 
-// Bagong function para sa Notebook View
-function openNotebook(key) {
-    const data = storyData[key];
-    const modalContent = document.getElementById('modal-content');
+            photoArea.innerHTML = displayImgs.length > 0 
+                ? displayImgs.map(img => `<div class="polaroid-mini" style="--r: ${Math.random()*8-4}deg" onclick="openLightbox('${img}')"><img src="${img}"></div>`).join('') 
+                : `<div class="w-full h-full flex justify-center items-center py-10 text-dark/20 italic">A beautiful memory kept in our hearts.</div>`;
 
-    const notebookHtml = `
-        <button onclick="openStory('${key}')" class="mb-4 text-xs font-bold text-primary hover:underline">← BACK TO STORY</button>
-        <div class="notebook-view">
-            ${data.imgs.map(url => `
-                <div class="polaroid-frame" style="transform: rotate(${Math.random() * 4 - 2}deg);">
-                    <img src="${url}" class="w-full h-auto rounded-sm shadow-sm" style="aspect-ratio: 1/1; object-fit: cover;">
-                </div>
-            `).join('')}
-        </div>
-        <div class="mt-8">${data.text}</div>
-    `;
+            textArea.innerHTML = data.text;
+            textArea.style.transform = `translateY(0)`;
 
-    modalContent.innerHTML = notebookHtml;
-    // Scroll to top of modal
-    document.getElementById('modal-card').scrollTop = 0;
-}
-
-        function closeStory() {
-            document.getElementById('modal-card').classList.remove('fan-active');
+            modal.style.display = 'flex';
             setTimeout(() => {
-                document.getElementById('story-modal').style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }, 300);
+                modal.classList.add('active');
+                if(!hasStarted) { music.play(); hasStarted = true; }
+                handlePagination();
+            }, 10);
+            document.body.style.overflow = 'hidden';
         }
 
-        function goToGallery(type) { window.location.href = '/HTML/gallery.html?tab=' + type; }
-
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerHTML = ['❤️', '💖', '🌸', '✨'][Math.floor(Math.random() * 4)];
-            heart.style.left = Math.random() * 100 + "vw";
-            heart.style.fontSize = Math.random() * 15 + 15 + "px";
-            heart.style.animationDuration = (Math.random() * 5 + 5) + "s";
-            document.getElementById('heart-bg').appendChild(heart);
-            setTimeout(() => { heart.remove(); }, 10000);
+        function handlePagination() {
+            const wrapper = document.getElementById('text-wrapper');
+            const textArea = document.getElementById('text-area');
+            const controls = document.getElementById('pagination-controls');
+            
+            controls.innerHTML = '';
+            
+            if (window.innerWidth > 640 && textArea.scrollHeight > wrapper.offsetHeight) {
+                if (currentPage < Math.ceil(textArea.scrollHeight / wrapper.offsetHeight) - 1) {
+                    controls.innerHTML += `<button class="page-nav-btn" onclick="changePage(1)">Turn Page →</button>`;
+                }
+                if (currentPage > 0) {
+                    controls.innerHTML = `<button class="page-nav-btn" onclick="changePage(-1)">← Previous</button>` + controls.innerHTML;
+                }
+            }
         }
-        setInterval(createHeart, 600);
 
-        window.onload = () => {
+        function changePage(dir) {
+            const textArea = document.getElementById('text-area');
+            const wrapper = document.getElementById('text-wrapper');
+            
+            wrapper.classList.remove('animate-page-next', 'animate-page-prev');
+            void wrapper.offsetWidth; 
+            
+            if (dir > 0) {
+                wrapper.classList.add('animate-page-next');
+            } else {
+                wrapper.classList.add('animate-page-prev');
+            }
+            
             setTimeout(() => {
-                const finalText = document.getElementById('final-text');
-                if (finalText) finalText.classList.replace('opacity-0', 'opacity-100');
-            }, 5500);
+                currentPage += dir;
+                textArea.style.transform = `translateY(-${currentPage * wrapper.offsetHeight}px)`;
+                handlePagination();
+            }, 300); 
+        }
+
+        function openLightbox(src) { 
+            document.getElementById('lightbox-img').src = src; 
+            document.getElementById('lightbox').style.display = 'flex'; 
+        }
+        
+        function closeStory() { 
+            const modal = document.getElementById('story-modal');
+            modal.classList.remove('active');
+            setTimeout(() => { 
+                modal.style.display = 'none'; 
+                document.body.style.overflow = 'auto'; 
+            }, 500);
+        }
+
+        function toggleMusic() { 
+            music.paused ? music.play() : music.pause(); 
+        }
+
+        setInterval(() => {
+            const h = document.createElement('div'); h.className = 'heart'; 
+            h.innerHTML = ['❤️', '💖', '🌸', '✨'][Math.floor(Math.random()*4)];
+            h.style.left = Math.random()*100 + "vw"; h.style.fontSize = Math.random()*15+15+"px"; 
+            h.style.animationDuration = (Math.random()*8+4)+"s";
+            document.getElementById('heart-bg').appendChild(h); 
+            setTimeout(() => h.remove(), 8000);
+        }, 700);
+
+        window.onload = () => { 
+            setTimeout(() => { 
+                const ft = document.getElementById('final-text'); 
+                if (ft) ft.classList.replace('opacity-0', 'opacity-100'); 
+            }, 5500); 
         };
     </script>
 </body>
