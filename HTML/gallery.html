@@ -8,6 +8,23 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
     
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ff4d6d',
+                        secondary: '#ffccd5',
+                        accent: '#fff0f3',
+                        paper: '#fffef2',
+                        wood: '#5d4037',
+                        dark: '#4a3a3a'
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
         :root {
             --primary: #ff4d6d;
@@ -20,7 +37,7 @@
         body { 
             font-family: 'Quicksand', sans-serif; 
             background: linear-gradient(to right, #fdfaf8, #f5efeb, #fdfaf8); 
-            color: #4a3a3a; 
+            color: var(--dark); 
             overflow-x: hidden;
             width: 100%;
         }
@@ -43,9 +60,11 @@
         }
         @keyframes drawLine { to { stroke-dashoffset: 0; } }
 
-        /* --- NOTEBOOK STYLING --- */
+        /* --- NOTEBOOK STYLING (WITH PAPER EFFECT) --- */
         .notebook-container {
-            background: #fffdf9;
+            background-color: var(--paper);
+            background-image: linear-gradient(#e5e5e5 1px, transparent 1px);
+            background-size: 100% 30px; /* This creates the ruled paper lines */
             border-radius: 8px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.1);
             position: relative;
@@ -64,7 +83,7 @@
             opacity: 0.1;
         }
 
-        /* --- POLAROID GRID --- */
+        /* --- POLAROID GRID & TAPE EFFECT --- */
         .notebook-page-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -79,9 +98,27 @@
             border: 1px solid rgba(0,0,0,0.03); 
             transition: all 0.3s ease;
             cursor: zoom-in;
+            position: relative; /* Required for the tape to position correctly */
         }
+        
+        /* THE TAPE */
+        .polaroid-frame::after {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            width: 45px;
+            height: 16px;
+            background: rgba(255, 255, 255, 0.65);
+            border: 1px solid rgba(0,0,0,0.05);
+            transform: translateX(-50%) rotate(var(--tape-rot, -3deg));
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            backdrop-filter: blur(2px);
+            z-index: 5;
+        }
+
         .polaroid-frame:hover { 
-            transform: scale(1.02) rotate(1deg); 
+            transform: scale(1.02) rotate(1deg) !important; 
             z-index: 50; 
         }
         .polaroid-content { 
@@ -143,20 +180,6 @@
             .polaroid-frame { padding: 5px 5px 15px 5px !important; }
         }
     </style>
-    
-    <script>
-        tailwind.config = { 
-            theme: { 
-                extend: { 
-                    colors: { 
-                        primary: '#ff4d6d', 
-                        secondary: '#ffccd5', 
-                        accent: '#fff0f3' 
-                    } 
-                } 
-            } 
-        }
-    </script>
 </head>
 <body class="overflow-x-hidden antialiased">
 
@@ -177,7 +200,7 @@
                 </svg>
             </div>
             <div class="flex items-center gap-4 md:gap-12">
-                <a href="../index.html" class="font-bold text-gray-400 border-b-2 border-transparent hover:text-primary hover:border-primary transition-all uppercase text-[10px] md:text-xs tracking-widest py-2">Timeline</a>
+                <a href="index.html" class="font-bold text-gray-400 border-b-2 border-transparent hover:text-primary hover:border-primary transition-all uppercase text-[10px] md:text-xs tracking-widest py-2">Timeline</a>
                 
                 <button id="nav-photos" onclick="switchTab('photos')" class="font-bold text-primary border-b-2 border-primary hover:text-primary transition-all uppercase text-[10px] md:text-xs tracking-widest py-2">Albums</button>
                 
@@ -201,9 +224,9 @@
                 <div class="notebook-container">
                     <div id="photo-grid" class="notebook-page-grid"></div>
                     
-                    <div class="flex justify-center items-center gap-4 md:gap-8 mt-12 pt-8 border-t border-gray-100">
+                    <div class="flex justify-center items-center gap-4 md:gap-8 mt-12 pt-8 border-t border-gray-200">
                         <button id="prev-page" class="page-btn" onclick="changePage(-1)">Prev</button>
-                        <span id="page-num" class="font-bold text-dark/40 text-xs md:text-sm">Page 1</span>
+                        <span id="page-num" class="font-bold text-dark/40 text-xs md:text-sm bg-white px-4 py-1 rounded-full border border-gray-100 shadow-sm">Page 1</span>
                         <button id="next-page" class="page-btn" onclick="changePage(1)">Next</button>
                     </div>
                 </div>
@@ -279,8 +302,10 @@
             let html = '';
             for(let i = start; i <= end; i++) {
                 const rotation = (Math.random() * 4 - 2).toFixed(1);
+                const tapeRot = (Math.random() * 10 - 5).toFixed(1); // Generates random tape angle
+                
                 html += `
-                    <div class="polaroid-frame" style="transform: rotate(${rotation}deg)" onclick="openLightbox('/${prefix}/${i}.jpg')">
+                    <div class="polaroid-frame" style="transform: rotate(${rotation}deg); --tape-rot: ${tapeRot}deg;" onclick="openLightbox('/${prefix}/${i}.jpg')">
                         <img src="/${prefix}/${i}.jpg" loading="lazy" class="polaroid-content">
                     </div>`;
             }
@@ -307,20 +332,15 @@
         }
 
         function switchTab(name) {
-            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-            
-            // Show selected tab
             document.getElementById(`${name}-tab`).classList.remove('hidden');
             
-            // Update Navbar Active Styles
             const activeClasses = 'font-bold text-primary border-b-2 border-primary hover:text-primary transition-all uppercase text-[10px] md:text-xs tracking-widest py-2';
             const inactiveClasses = 'font-bold text-gray-400 border-b-2 border-transparent hover:text-primary hover:border-primary transition-all uppercase text-[10px] md:text-xs tracking-widest py-2';
 
             document.getElementById('nav-photos').className = name === 'photos' ? activeClasses : inactiveClasses;
             document.getElementById('nav-videos').className = name === 'videos' ? activeClasses : inactiveClasses;
 
-            // Load Content
             if(name === 'videos') {
                 loadVideos(); 
             } else {
@@ -330,11 +350,13 @@
 
         function loadVideos() {
             const grid = document.getElementById('main-video-grid');
-            grid.innerHTML = Array.from({ length: config.counts.videos }, (_, i) => `
-                <div class="polaroid-frame" onclick="openLightbox('/VIDEOS/${i+1}.mp4')">
+            grid.innerHTML = Array.from({ length: config.counts.videos }, (_, i) => {
+                const tapeRot = (Math.random() * 10 - 5).toFixed(1);
+                return `
+                <div class="polaroid-frame" style="--tape-rot: ${tapeRot}deg;" onclick="openLightbox('/VIDEOS/${i+1}.mp4')">
                     <video src="/VIDEOS/${i+1}.mp4" muted loop autoplay playsinline class="polaroid-content"></video>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         function openLightbox(src) {
@@ -361,7 +383,6 @@
             music.paused ? music.play() : music.pause(); 
         }
 
-        // Heart Animation Generator
         setInterval(() => {
             const h = document.createElement('div'); 
             h.className = 'heart'; 
