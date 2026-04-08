@@ -2,82 +2,393 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Letter to You</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/CSS/letter.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>My Letter to You | The Surprise</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ff4d6d',
+                        secondary: '#ffccd5',
+                        accent: '#fff0f3',
+                        paper: '#fffef2',
+                        wood: '#5d4037',
+                        dark: '#4a3a3a'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --primary: #ff4d6d;
+            --secondary: #ffccd5;
+            --accent: #fff0f3;
+            --paper: #fffef2;
+            --wood: #5d4037;
+        }
+
+        body { 
+            font-family: 'Quicksand', sans-serif; 
+            background: #fdfaf8; 
+            color: var(--dark); 
+            overflow-x: hidden; 
+            width: 100%; 
+            min-height: 100vh;
+        }
+
+        .font-dancing { font-family: 'Dancing Script', cursive; }
+        .font-signature { font-family: 'Great Vibes', cursive; text-transform: none; }
+
+        /* --- EFFECTS --- */
+        .grain-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.03; pointer-events: none; z-index: 40;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+        .heart {
+            position: fixed; bottom: -10%; user-select: none;
+            pointer-events: none; z-index: 5; animation: float linear forwards;
+        }
+
+        /* --- NAVBAR & UTILS --- */
+        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; width: 100%; height: 100%; }
+        .logo-box { width: 200px; margin-top: -15px; transition: width 0.3s ease; flex-shrink: 0; }
+        .drawing-path { stroke-dasharray: 1000; stroke-dashoffset: 1000; animation: drawLine 6s ease-out forwards; filter: drop-shadow(0 0 4px rgba(255, 77, 109, 0.2)); }
+        @keyframes drawLine { to { stroke-dashoffset: 0; } }
+
+        #music-toggle { 
+            position: fixed; bottom: 25px; right: 25px; z-index: 1001; 
+            background: white; border: 1px solid var(--secondary); width: 45px; height: 45px; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; box-shadow: 0 10px 20px rgba(255, 77, 109, 0.2); 
+        }
+
+        /* --- PASSWORD OVERLAY --- */
+        #password-overlay {
+            position: fixed; inset: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; background: rgba(253, 250, 248, 0.98);
+            backdrop-filter: blur(10px); z-index: 9999; transition: opacity 0.6s ease;
+        }
+        .pass-box {
+            width: 90%; max-width: 450px; padding: 40px 30px; background: white; text-align: center;
+            border-radius: 20px; box-shadow: 0 20px 50px rgba(255, 77, 109, 0.1); border: 1px solid var(--accent);
+        }
+
+        /* --- CONTENT WRAPPER --- */
+        #content-wrapper {
+            filter: blur(25px); pointer-events: none; transition: filter 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- LETTER COMPONENT --- */
+        .letter-paper {
+            position: relative; max-width: 650px; width: 100%; margin: 0 auto;
+            padding: 60px 50px; background: var(--paper);
+            background-image: linear-gradient(#e5e5e5 1px, transparent 1px); background-size: 100% 30px; 
+            border-radius: 4px 20px 20px 4px; box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.08);
+            border-left: 15px solid var(--primary);
+            font-size: 1.1rem; line-height: 1.8; text-align: justify; color: var(--dark);
+        }
+        
+        .letter-paper p {
+            margin-bottom: 1.5rem;
+            text-indent: 2rem;
+        }
+
+        .signature {
+            font-family: 'Dancing Script', cursive; font-size: 3rem; color: var(--primary); margin-top: 40px; text-align: right; padding-right: 20px; text-indent: 0 !important;
+        }
+
+        /* --- STICKER LOGIC --- */
+        .sticker {
+            position: absolute; cursor: pointer; z-index: 10; transition: transform 0.3s ease;
+        }
+        .sticker:hover { transform: scale(1.1) rotate(5deg); }
+        .bubble {
+            position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) scale(0);
+            padding: 8px 15px; margin-bottom: 10px; background: white; color: var(--primary);
+            border-radius: 15px; font-size: 0.8rem; font-weight: bold; box-shadow: 0 5px 15px rgba(255, 77, 109, 0.2);
+            white-space: nowrap; pointer-events: none; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid var(--secondary);
+        }
+        .sticker:hover .bubble { transform: translateX(-50%) scale(1); }
+
+        .sticker-1 { top: -30px; right: -30px; }
+        .sticker-2 { bottom: 15%; left: -50px; }
+
+        /* --- SCRATCH CARD --- */
+        .scratch-box {
+            margin-top: 50px; padding-top: 30px; text-align: center; border-top: 2px dashed var(--secondary);
+        }
+        #scratch-container {
+            position: relative; width: 100%; max-width: 320px; height: 120px; margin: 20px auto;
+            border-radius: 15px; overflow: hidden; box-shadow: 0 10px 20px rgba(255, 77, 109, 0.1); border: 2px solid var(--accent);
+        }
+        #scratch-canvas {
+            position: absolute; top: 0; left: 0; cursor: crosshair; touch-action: none; z-index: 2; width: 100%; height: 100%;
+        }
+        .hidden-message {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex;
+            align-items: center; justify-content: center; padding: 15px; background: white;
+            color: var(--primary); font-weight: bold; font-size: 1.1rem; text-align: center; z-index: 1;
+        }
+
+        /* --- MOBILE REFINEMENTS --- */
+        @media (max-width: 768px) {
+            .logo-box { width: 140px; margin-top: -10px; }
+            .letter-paper { padding: 40px 25px; font-size: 1rem; border-left-width: 10px;}
+            .sticker-1 { top: -20px; right: -10px; }
+            .sticker-1 img { width: 120px !important; height: 120px !important; }
+            .sticker-2 { bottom: 10%; left: -20px; }
+            .sticker-2 img { width: 100px !important; height: 100px !important; }
+            .signature { font-size: 2.2rem; }
+        }
+    </style>
 </head>
-<body>
+<body class="overflow-x-hidden antialiased">
+
+    <div class="grain-overlay"></div>
+    <div id="heart-bg" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <audio id="bg-music" loop>
+        <source src="/MUSIC/Over October - Intertwine (Official Lyric Video) ft. The Ridleys.mp3" type="audio/mpeg">
+    </audio>
+    <div id="music-toggle" onclick="toggleMusic()">
+        <span id="music-icon">🎵</span>
+    </div>
 
     <div id="password-overlay">
         <div class="pass-box">
-            <h2>Enter the Special Date</h2>
-            <p>Hint: The day you said I love you for the first time? <br><b>(MMDDYYYY) + ily</b></p>
-            <input type="password" id="passInput" placeholder="Password here...">
-            <br>
-            <button onclick="checkPassword()">Unlock My Heart</button>
-            <p id="error" style="color: var(--primary); display: none; margin-top: 15px; font-size: 0.85rem;">Oops! That's not it, love. Try again? ✨</p>
+            <h2 class="font-dancing text-4xl text-primary mb-4">Enter the Special Date</h2>
+            <p class="text-sm text-dark/60 mb-6">Hint: The day you said I love you for the first time? <br><b class="text-dark">Format: (MMDDYYYY) + ily</b></p>
+            
+            <input type="password" id="passInput" placeholder="Password here..." class="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-primary focus:bg-white transition-all outline-none text-center font-bold tracking-widest text-dark mb-4">
+            
+            <button onclick="checkPassword()" class="w-full bg-primary text-white font-bold py-3 rounded-xl hover:scale-105 transition-transform shadow-lg shadow-primary/30 uppercase tracking-widest text-sm">Unlock My Heart</button>
+            
+            <p id="error" class="hidden text-primary font-bold text-sm mt-4">Oops! That's not it, love. Try again? ✨</p>
         </div>
     </div>
 
     <div id="content-wrapper">
-        <nav class="sticky top-0 bg-white/80 backdrop-blur-xl border-b border-gray-100 z-[1000] py-4 shadow-sm">
-    <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
         
-        <div class="flex items-center">
-            <span class="text-xl font-dancing text-primary font-bold tracking-wider">OUR STORY</span>
-        </div>
-        
-        <div class="flex items-center gap-6 md:gap-8">
-            <a href="../index.html" class="font-medium text-gray-600 hover:text-primary transition-colors">Timeline</a>
-            
-            <div class="relative group">
-            <button class="font-medium hover:text-primary py-2">Albums ▾</button>
-            <div class="absolute left-1/2 -translate-x-1/2 hidden group-hover:block bg-white shadow-xl rounded-xl p-2 min-w-[160px] animate-in fade-in slide-in-from-top-2">
-                <button onclick="gotoGallery('photos')" class="w-full text-left px-4 py-2 hover:bg-secondary rounded-lg transition-colors">📸 Photos</button>
-                <button onclick="gotoGallery('videos')" class="w-full text-left px-4 py-2 hover:bg-secondary rounded-lg transition-colors">🎥 Videos</button>
+        <nav class="sticky top-0 bg-white/80 backdrop-blur-xl border-b border-gray-100 z-[1000] shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 nav-wrapper">
+                <div class="logo-box">
+                    <svg viewBox="0 0 180 60" class="font-signature w-full h-full">
+                        <text x="0" y="45" fill="none" stroke="#ff4d6d" stroke-width="1.5" class="drawing-path text-3xl">Our Story</text>
+                        <text id="final-text" x="0" y="45" fill="#ff4d6d" class="opacity-0 transition-opacity duration-1000 text-3xl">Our Story</text>
+                    </svg>
+                </div>
+                
+                <div class="flex items-center gap-3 md:gap-8">
+                    <a href="index.html" class="font-bold text-gray-400 border-b-2 border-transparent hover:text-primary hover:border-primary transition-all uppercase text-[9px] md:text-xs tracking-widest py-2">Timeline</a>
+                    <button onclick="window.location.href='/HTML/gallery.html?tab=photos'" class="font-bold text-gray-400 border-b-2 border-transparent hover:text-primary hover:border-primary transition-all uppercase text-[9px] md:text-xs tracking-widest py-2">Albums</button>
+                    <button onclick="window.location.href='/HTML/gallery.html?tab=videos'" class="font-bold text-gray-400 border-b-2 border-transparent hover:text-primary hover:border-primary transition-all uppercase text-[9px] md:text-xs tracking-widest py-2">Videos</button>
+                    
+                    <a href="/HTML/game.html" class="font-bold text-primary border-b-2 border-primary uppercase text-[9px] md:text-xs tracking-widest py-2 transition-all">Surprise</a>
+                </div>
             </div>
-        </div>
+        </nav>
 
-            <a href="/HTML/game.html" class="bg-primary/10 text-primary px-5 py-2 rounded-full text-sm font-bold hover:bg-primary hover:text-white transition-all shadow-sm">
-                The Surprise
-            </a>
-        </div>
-
-    </div>
-</nav>
-
-        <section class="letter-container">
+        <section class="max-w-7xl mx-auto px-4 py-16 md:py-24 relative z-10">
             <div class="letter-paper">
                 
                 <div class="sticker sticker-1">
                     <div class="bubble">I love you so much! ❤️</div>
-                    <img src="/PICTURES/se.png" alt="cute couple" style="width: 200px; height: 200px;">
+                    <img src="/PICTURES/se.png" alt="cute couple" style="width: 180px; height: 180px; object-fit: contain;">
                 </div>
 
                 <div class="sticker sticker-2">
                     <div class="bubble">Flowers for you! 🌸</div>
-                    <img src="/PICTURES/le.png" alt="cute boy" style="width: 150px; height: 150px;">
+                    <img src="/PICTURES/le.png" alt="cute boy" style="width: 130px; height: 130px; object-fit: contain;">
                 </div>
 
-                <p>Dearest [Her Name],</p>
+                <p style="text-indent: 0; font-weight: bold; font-size: 1.3rem; margin-bottom: 2rem;">Dearest [Her Name],</p>
+                
                 <p>If you're reading this, it means you remembered our special date. (Or you just guessed it because you're too smart!)</p>
+                
                 <p>Ever since July 2025, you've been the highlight of my every day. I never knew a single person could bring so much color into my world.</p>
-                <p>[Insert your romantic letter here...]</p>
-                <p>Happy Monthsary, my beautiful girl.</p>
-                <div class="signature">With all my love,<br>[Your Name]</div>
+                
+                <p>[Insert your romantic letter here. Pwede mong habaan 'to nang bongga. Ginamit ko na yung Tailwind typography para maging malinis at madaling basahin yung text.]</p>
+                
+                <p>Thank you for everything. For being my peace, my home, and my favorite adventure. Happy Monthsary, my beautiful girl.</p>
+                
+                <div class="signature">
+                    With all my love,<br>
+                    [Your Name]
+                </div>
 
                 <div class="scratch-box">
-                    <p style="font-size: 0.9rem; color: var(--secondary); font-weight: bold;">Scratch for a special surprise! ✨</p>
+                    <p class="font-bold text-secondary uppercase tracking-widest text-sm mb-4">✨ Scratch below for a special surprise! ✨</p>
                     <div id="scratch-container">
                         <div class="hidden-message">🎁 A Movie Date & Unlimited Kisses!</div>
-                        <canvas id="scratch-canvas" width="280" height="100"></canvas>
+                        <canvas id="scratch-canvas"></canvas>
                     </div>
                 </div>
+
             </div>
         </section>
+
     </div>
 
-    <script src="/JS/letter.js"></script>
+    <script>
+        // --- Music Function ---
+        const music = document.getElementById('bg-music');
+        function toggleMusic() { music.paused ? music.play() : music.pause(); }
+
+        // --- Password Logic ---
+        function checkPassword() {
+            const input = document.getElementById('passInput');
+            const errorMsg = document.getElementById('error');
+            const passValue = input.value.toLowerCase().trim();
+            const correctPass = "010926ily"; // MMDDYYYY + ily
+
+            if (passValue === correctPass) {
+                unlockContent();
+            } else {
+                if (errorMsg) errorMsg.classList.remove('hidden');
+                input.value = "";
+                // Simple shake animation for error
+                input.style.transform = "translateX(-10px)";
+                setTimeout(() => input.style.transform = "translateX(10px)", 100);
+                setTimeout(() => input.style.transform = "translateX(0)", 200);
+            }
+        }
+
+        function unlockContent() {
+            const overlay = document.getElementById('password-overlay');
+            const wrapper = document.getElementById('content-wrapper');
+
+            if (overlay) overlay.style.opacity = '0';
+
+            setTimeout(() => {
+                if (overlay) overlay.style.display = 'none';
+                
+                if (wrapper) {
+                    wrapper.style.filter = 'none';
+                    wrapper.style.pointerEvents = 'auto';
+                }
+                
+                // Play music automatically upon unlocking if not already playing
+                if (music.paused) music.play().catch(e => console.log("Audio play prevented by browser policy"));
+                
+                // Initialize scratch card after the transition
+                initScratch(); 
+            }, 600);
+        }
+
+        // Listen for Enter key on password input
+        document.getElementById("passInput").addEventListener("keyup", (event) => {
+            if (event.key === "Enter") checkPassword();
+        });
+
+        // --- Scratch Card Logic ---
+        function initScratch() {
+            const canvas = document.getElementById('scratch-canvas');
+            const container = document.getElementById('scratch-container');
+            if (!canvas || !container) return;
+
+            // Make canvas fit the container dynamically
+            canvas.width = container.offsetWidth;
+            canvas.height = container.offsetHeight;
+
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+
+            // Canvas Setup: Silver scratch surface
+            ctx.fillStyle = '#C0C0C0';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Add some texture/pattern to the silver to make it look like a scratch card
+            ctx.fillStyle = '#A9A9A9';
+            for(let i=0; i<100; i++) {
+                ctx.beginPath();
+                ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 3, 0, Math.PI*2);
+                ctx.fill();
+            }
+            
+            // Instruction text
+            ctx.fillStyle = '#666';
+            ctx.font = 'bold 16px Quicksand';
+            ctx.textAlign = 'center';
+            ctx.fillText('Scratch here with your finger', canvas.width / 2, canvas.height / 2 + 5);
+
+            function getPointerPos(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                
+                return {
+                    x: clientX - rect.left,
+                    y: clientY - rect.top
+                };
+            }
+
+            function scratch(e) {
+                if (!isDrawing) return;
+                
+                const pos = getPointerPos(e);
+
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, 20, 0, Math.PI * 2); // 20 is the brush size
+                ctx.fill();
+            }
+
+            // Event Listeners
+            const startDrawing = (e) => {
+                isDrawing = true;
+                scratch(e); // Scratch immediately on tap
+            };
+            const stopDrawing = () => isDrawing = false;
+
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('touchstart', startDrawing);
+            
+            window.addEventListener('mouseup', stopDrawing);
+            window.addEventListener('touchend', stopDrawing);
+            
+            canvas.addEventListener('mousemove', scratch);
+            canvas.addEventListener('touchmove', (e) => {
+                scratch(e);
+                e.preventDefault(); // IMPORTANT: Prevents the whole screen from scrolling while scratching
+            }, { passive: false });
+        }
+
+        // --- Heart Particles Background ---
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = ['❤️', '💖', '🌸', '✨'][Math.floor(Math.random() * 4)];
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.fontSize = Math.random() * 15 + 15 + "px";
+            heart.style.animationDuration = (Math.random() * 5 + 5) + "s";
+            document.getElementById('heart-bg').appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 10000);
+        }
+
+        setInterval(createHeart, 800);
+
+        // Logo Animation trigger
+        window.onload = () => {
+            setTimeout(() => {
+                const ft = document.getElementById('final-text');
+                if (ft) ft.classList.replace('opacity-0', 'opacity-100');
+            }, 5500);
+        };
+    </script>
 </body>
 </html>
