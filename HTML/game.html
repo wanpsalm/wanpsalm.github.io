@@ -195,9 +195,26 @@
     </div>
 
     <script>
-        // Music Function
+        // Music Function & Scroll Event
         const music = document.getElementById('bg-music');
-        function toggleMusic() { music.paused ? music.play() : music.pause(); }
+        let musicStarted = false;
+
+        function toggleMusic() { 
+            if (music.paused) {
+                music.play();
+                musicStarted = true;
+            } else {
+                music.pause();
+            }
+        }
+
+        // Play music on scroll
+        window.addEventListener('scroll', () => {
+            if (!musicStarted) {
+                music.play().catch(e => console.log("Audio play prevented"));
+                musicStarted = true;
+            }
+        });
 
         // Game State
         const state = {
@@ -272,7 +289,7 @@
         function startLoveMeterStage() {
             state.chaseActive = true;
             state.tapCount = 0;
-            state.timer = 5.0;
+            state.timer = 10.0;
 
             updateStatus("FINAL STAGE: Punuin mo yung Love Meter in 10 seconds! TAP FAST! ❤️");
             
